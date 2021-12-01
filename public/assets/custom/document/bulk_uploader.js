@@ -31,7 +31,7 @@ $(document).ready(function () {
     $('#ProgressBar').hide();  
 
     $('#folder').select2({
-        placeholder: "Choose a workspace...",
+        placeholder: "Choose a folder...",
         allowClear : false
      });
  

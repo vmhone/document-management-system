@@ -37,7 +37,7 @@
             <div class="card bg-primary mini-stat position-relative">
                 <div class="card-body">
                     <div class="mini-stat-desc">
-                        <h6 class="text-uppercase text-white">Workspaces</h6>
+                        <h6 class="text-uppercase text-white">Folders</h6>
                         <div class="text-white">
                             <h3 id="TotalFolders" class="mb-3 mt-0"><?php echo $total_folders; ?></h3>
                         </div>
@@ -76,7 +76,7 @@
         <div id="FolderOverview" class="col-xl-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-4">Workspace Overview</h4>
+                    <h4 class="card-title mb-4">Folder Overview</h4>
                     <div class="row align-items-center">
                         <div class="col-sm-6">
                             <div id="donut-chart" class="apex-charts"></div>
@@ -92,7 +92,7 @@
                     <h4 class="card-title mb-4">Latest Files</h4>
                     <div class="table-responsive">
                         <table id="FileTable" class="table table-centered">
-                            <thead class = "thead-light">
+                            <thead>
                                 <tr>
                                     <th scope="col">Name</th>
                                     <th scope="col">Uploaded By</th>
@@ -111,10 +111,10 @@
         <div id="LatestFolders" class="col-xl-6">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-4">Latest Workspaces</h4>
+                    <h4 class="card-title mb-4">Latest Folders</h4>
                     <div class="table-responsive">
                         <table id="FolderTable" class="table table-centered">
-                            <thead class = "thead-light">
+                            <thead>
                                 <tr>
                                     <th scope="col">Name</th>
                                     <th scope="col">Created By</th>

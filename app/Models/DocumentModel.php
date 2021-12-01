@@ -131,7 +131,7 @@ class DocumentModel extends Model
                 $logging_model->logOutgoingEmail($request);
             }
 
-            $response['remark'] = sizeof($mailing_list) <= 1 ? 'We will be shortly sending an email to the recipient' : 'We will be shortly sending an email to the recipients';
+            $response['remark'] = sizeof($mailing_list) <= 1 ? 'Document sent via email to recipient' : 'Document sent via email to recipients';
             $response['status'] = true;
             return $response;
 
@@ -578,7 +578,7 @@ class DocumentModel extends Model
             
             if (isset($row)) {
                 $response['remark']        = 'Unable to transfer the document. A document with a similar name ';
-                $response['remark']       .= 'already exists in the workspace';
+                $response['remark']       .= 'already exists in the folder';
                 $response['status']        = true;
                 $response['exception_msg'] = null;
                 return $response;
@@ -1493,7 +1493,7 @@ class DocumentModel extends Model
 
             if ($result['privilege'] != PrivilegeOptions::WRITE) {
                 $response['status'] = false;
-                $response['remark'] = 'Unable to upload the document. You do not have write privileges on the workspace';
+                $response['remark'] = 'Unable to upload the document. You do not have write privileges on the folder';
                 return $response;
             }
   

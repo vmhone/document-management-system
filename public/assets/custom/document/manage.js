@@ -654,10 +654,10 @@ function TransferDocument(id) {
 function GetAvailableFolders(currentFolder) {
     $.ajax({
         type: "GET",
-        url: "../Workspace/GetAvailableWorkspaces",
+        url: "../Folder/GetAvailableFolders",
         success: function (response) {
             $('#DestinationFolder').empty();
-            $("#DestinationFolder").append('<option value="">Select a workspace</option>');
+            $("#DestinationFolder").append('<option value="">Select a folder</option>');
             let jsonResponse = $.parseJSON(response);
             for (let i = 0; i < jsonResponse.length; i++) {
                 if (jsonResponse[i].status_id > 0) {

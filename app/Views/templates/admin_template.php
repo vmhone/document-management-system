@@ -82,13 +82,13 @@
 
                                         <li class="nav-item dropdown active">
                                             <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-pages" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Workspace <div class="arrow-down"></div>
+                                                Folder <div class="arrow-down"></div>
                                             </a>
                                             <div class="dropdown-menu" aria-labelledby="topnav-pages">
                                                 <?php if ($_SESSION['role_id'] == UserRole::ADMINISTRATOR || $_SESSION['role_id'] == UserRole::SUPER_USER) { ?>
-                                                    <a href="<?php echo site_url('Workspace')?>/Index" class="dropdown-item">Create</a>
+                                                    <a href="<?php echo site_url('Folder')?>/Index" class="dropdown-item">Create</a>
                                                 <?php } ?>
-                                                <a href="<?php echo site_url('Workspace')?>/Manage" class="dropdown-item">Manage Workspaces</a>
+                                                <a href="<?php echo site_url('Folder')?>/Manage" class="dropdown-item">Manage Folders</a>
                                             </div>
                                         </li>
 
@@ -204,7 +204,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="text-sm-right d-none d-sm-block">
-                                    Developed by: <a target="_blank" href="http://www.ahlmw.com">AHL Group</a>
+                                    Developed by: <a target="_blank" href="https://ic-techafrica.com">IC-Tech Africa</a> | <a target="_blank" href="http://www.ahlmw.com">AHL Group</a>
                                 </div>
                             </div>
                         </div>

@@ -769,12 +769,6 @@ class UserModel extends Model {
 
                 // what is the current used quota?
                 $used_quota = $quota_model->computeUsedQuota($request['user_id']);
-
-                if (!$used_quota['status']) {
-                    $response['remark'] = 'Unable to calculate used quota. Try again later';
-                    $response['status'] = false;
-                    return $response;
-                }
                 
                 helper('number');
 
@@ -1120,7 +1114,7 @@ class UserModel extends Model {
                 'code'          => $lib->encryptString($otp, $_SESSION['encryption_key']),
                 'date_created'  => new Time('now'),
                 'date_expiry'   => date('Y-m-d H:i:s', time() + ($row->parameter_value * 60))
-            ];  
+            ];
 
             $builder->insert($data);
             $db->transCommit();
@@ -1130,9 +1124,7 @@ class UserModel extends Model {
 
             // user probably does not exist
             if ($user_response['result_set'] == null) {
-                $response['status'] = false;
-                $response['remark'] = 'We were unable to send the code. Contact support if the issue persists';
-                return $response;
+                return false;
             }
 
             $row = $user_response['result_set'];
@@ -1287,10 +1279,8 @@ class UserModel extends Model {
             $row         = $param_model->getParameter('min_password_length');
             $min_length  = $row->parameter_value;
         } catch (\Exception $ex) {
-            log_message('error', $ex->getMessage());
-            
             $min_length = 0;
-            $response['remark'] = 'Something went wrong while processing your request';
+            $response['remark'] = 'Something went wrong while processing your request: ' . $ex->getMessage();
             $response['status'] = false;
             return $response;
         }

@@ -82,7 +82,7 @@
                                         </div>
 
                                     </fieldset>
-                                    <h3>Workspace Selection</h3>
+                                    <h3>Folder Selection</h3>
                                     <fieldset>
                                         <div class="row">
                                             <div class="col-md-6">

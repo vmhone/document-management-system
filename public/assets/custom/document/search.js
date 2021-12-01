@@ -78,7 +78,7 @@ function SearchDocument() {
 function GetAvailableOwners() {
     $.ajax({
         type: "GET",
-        url: "../Workspace/GetAvailableOwners",
+        url: "../Folder/GetAvailableOwners",
         success: function (response) {
             $('#User').empty();
             $("#User").append('<option value="">Select a user to search documents which they uploaded</option>');
@@ -100,10 +100,10 @@ function GetAvailableOwners() {
 function GetAvailableFolders() {
     $.ajax({
         type: "GET",
-        url: "../Workspace/GetAvailableWorkspaces",
+        url: "../Folder/GetAvailableFolders",
         success: function (response) {
             $('#Folder').empty();
-            $("#Folder").append('<option value="">Select a workspace to search in</option>');
+            $("#Folder").append('<option value="">Select a folder to search in</option>');
             let jsonResponse = $.parseJSON(response);
             for (let i = 0; i < jsonResponse.length; i++) {
                 if (jsonResponse[i].status_id > 0) {
@@ -116,7 +116,7 @@ function GetAvailableFolders() {
         error: function () {
             $('#Folder').empty();
             $('#MessageDiv').attr('class', 'alert alert-danger alert-dismissible fade show');
-            $('#MessageDiv').html('Something went wrong while fetching available workspaces');
+            $('#MessageDiv').html('Something went wrong while fetching available folders');
             $('#MessageDiv').show();
         }
     });

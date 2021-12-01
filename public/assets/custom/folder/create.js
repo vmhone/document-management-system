@@ -8,7 +8,7 @@ function CreateFolder() {
     $('#MessageDiv').hide();
     $.ajax({
         type: 'POST',
-        url: '../Workspace/CreateNewWorkspace',
+        url: '../Folder/CreateNewFolder',
         dataType: 'json',
         data: {
             "FolderName" : $('#FolderName').val(),

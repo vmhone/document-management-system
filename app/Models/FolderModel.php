@@ -88,7 +88,7 @@ class FolderModel extends Model {
             if (!isset($row)) {
                 $response['result_set']    = null;
                 $response['status']        = false;
-                $response['remark']        = sprintf('Workspace with ID: %d not found. Please try again', $id);
+                $response['remark']        = sprintf('Folder with ID: %d not found on the system', $id);
                 $response['exception_msg'] = null;
                 return $response;
             }
@@ -235,7 +235,7 @@ class FolderModel extends Model {
             
             // check if the folder exists
             if (!isset($row)) {
-                $response['remark']        = 'Unable to change the workspace state. It does not exist';
+                $response['remark']        = 'Unable to change the folder state. It does not exist';
                 $response['status']        = false;
                 $response['exception_msg'] = null;
 
@@ -250,7 +250,7 @@ class FolderModel extends Model {
             $response = $privilege_model->getPrivilegeForFolder($param);
 
             if ($response['privilege'] != PrivilegeOptions::WRITE) {
-                $response['remark'] = 'Unable to change the workspace state. You do not have write permissions';
+                $response['remark'] = 'Unable to change the folder state. You do not have write permissions';
                 $response['status'] = false;
 
                 return $response;
@@ -264,7 +264,7 @@ class FolderModel extends Model {
             $folder->where('id', $id);
             $folder->update();
             
-            $response['remark']        = 'Workspace state successfully changed';
+            $response['remark']        = 'Folder state successfully changed';
             $response['status']        = true;
             $response['exception_msg'] = null;
 
@@ -289,7 +289,7 @@ class FolderModel extends Model {
     public function renameFolder($request) {
         try {
             if (strcasecmp(trim($request['old_name']), trim($request['new_name'])) == 0) {
-                $response['remark']        = 'Unable to rename the workspace. The old and new name are the same';
+                $response['remark']        = 'Unable to rename the folder. The old and new name are the same';
                 $response['status']        = false;
                 $response['exception_msg'] = null;
                 return $response;
@@ -302,7 +302,7 @@ class FolderModel extends Model {
             $response = $privilege_model->getPrivilegeForFolder($param);
 
             if ($response['privilege'] != PrivilegeOptions::WRITE) {
-                $response['remark'] = 'Unable to rename the workspace. Access Denied';
+                $response['remark'] = 'Unable to change the folder state. Access Denied';
                 $response['status'] = false;
 
                 return $response;
@@ -312,7 +312,7 @@ class FolderModel extends Model {
             
             // the folder exists
             if (isset($row) && $row->id != $request['id']) {
-                 $response['remark']        = sprintf('Unable to rename the workspace. Workspace %s already exists', $request['new_name']);
+                 $response['remark']        = sprintf('Unable to rename the folder. Folder %s already exists', $request['new_name']);
                  $response['status']        = false;
                  $response['exception_msg'] = null;
                  return $response;
@@ -329,7 +329,7 @@ class FolderModel extends Model {
             $builder->where('id', $request['id']);
             $builder->update();
                         
-            $response['remark']        = sprintf('Workspace successfully renamed to %s', ucwords(trim($request['new_name'])));
+            $response['remark']        = sprintf('Folder successfully renamed to %s', ucwords(trim($request['new_name'])));
             $response['status']        = true;
             $response['exception_msg'] = null;
             
@@ -496,7 +496,7 @@ class FolderModel extends Model {
             $row = $this->validateFolderExistence($request['folder_name']);
             
             if (isset($row)) {
-                $response['remark']        = sprintf('Unable to create the workspace: %s. It already exists', $request['folder_name']);
+                $response['remark']        = sprintf('Unable to create the folder: %s. It already exists', $request['folder_name']);
                 $response['status']        = false;
                 $response['exception_msg'] = null;
                 return $response;
@@ -558,7 +558,7 @@ class FolderModel extends Model {
 
             $db->transCommit();
             
-            $response['remark']        = sprintf('Workspace: %s successfully created', ucwords(trim($request['folder_name'])));
+            $response['remark']        = sprintf('Folder: %s successfully created', ucwords(trim($request['folder_name'])));
             $response['status']        = true;
             $response['exception_msg'] = null;
             

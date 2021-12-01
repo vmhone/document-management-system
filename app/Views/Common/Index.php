@@ -6,7 +6,7 @@
     <title>Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Document Management System" name="description" />
-    <meta content="AHL Group" name="author" />
+    <meta content="IC-Tech Africa | AHL Group" name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="<?php echo base_url() ?>/assets/images/favicon.ico">
 
@@ -72,7 +72,7 @@
                     </div>
                 </div>
                 <div class="mt-5 text-center">
-                    <p>© <?php echo date('Y'); ?> DMS. Developed by: <a target="_blank" href="http://www.ahlmw.com">AHL Group</a></p>
+                    <p>© <?php echo date('Y'); ?> DMS. Developed by: <a target="_blank" href="https://ic-techafrica.com">IC-Tech Africa</a> | <a target="_blank" href="http://www.ahlmw.com">AHL Group</a></p>
                 </div>
 
             </div>

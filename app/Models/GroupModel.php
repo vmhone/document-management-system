@@ -152,7 +152,7 @@ class GroupModel extends Model
             if (isset($row)) {
                 if (strcasecmp($row->name, $lib->formatName($request['name']) == 0)) {
                     if ($row->id !== $request['id']) {
-                        $response['remark'] = sprintf('Unable to rename the group. The group: %s already exists', $request['group_name']);
+                        $response['remark'] = sprintf('Unable to rename the group. The name: %s already exists', $request['group_name']);
                         $response['status'] = false;
                         return $response;
                     }

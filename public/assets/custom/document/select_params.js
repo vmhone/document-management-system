@@ -1,7 +1,7 @@
 function getAvailableUsers() {
     $.ajax({
         type: "GET",
-        url: "../Workspace/GetAvailableOwners",
+        url: "../Folder/GetAvailableOwners",
         success: function (response) {
             let jsonResponse = $.parseJSON(response);
             for (let i = 0; i < jsonResponse.length; i++) {

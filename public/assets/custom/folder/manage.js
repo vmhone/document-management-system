@@ -21,7 +21,7 @@ $(document).ready(function () {
                        if (response.is_owner) {
                             $("#btnGrantUser").attr("disabled", true);
                             // this is the owner of the folder
-                            $('#GrantPrivilegesModalMessageDiv').html('You cannot modify the privileges for this user. They own the workspace');
+                            $('#GrantPrivilegesModalMessageDiv').html('You cannot modify the privileges for this user. They own the folder');
                             $('#GrantPrivilegesModalMessageDiv').show();
                             $('#GrantPrivilegesModalMessageDiv').attr('class', 'alert alert-info alert-dismissible fade show');
                        } else {
@@ -161,7 +161,7 @@ function DisplayModifyFolderModal(id) {
 
     $.ajax({
         "type": 'GET',
-        "url": '../Workspace/GetWorkspaceDetails/' + id,
+        "url": '../Folder/GetFolderDetails/' + id,
         "dataType": 'json',
         success: function (response) {
             $('#ModifyFolderName').val(response.name);
@@ -374,12 +374,12 @@ function ConfirmModify() {
     let state = $('#Status option:selected').val();
     if (state === '') {
         $('#ModifyModalMessageDiv').attr('class', 'alert alert-warning alert-dismissible fade show');
-        $('#ModifyModalMessageDiv').html('Please select a workspace status from the drop-down');
+        $('#ModifyModalMessageDiv').html('Please select a folder status from the drop-down');
         $('#ModifyModalMessageDiv').show();
     } else {
         Swal.fire({
             title: "Confirm",
-            text: "Proceed to change the workspace status?",
+            text: "Proceed to change the folder status?",
             type: "info",
             allowEscapeKey: true,
             showCancelButton: !0,
@@ -402,7 +402,7 @@ function ModifyFolder() {
 
     $.ajax({
         "type": 'POST',
-        "url": '../Workspace/ModifyWorkspace',
+        "url": '../Folder/ModifyFolder',
         data: {
             "FolderID" : folderID,
             "State"    : state
@@ -436,11 +436,11 @@ function GetFolderStates(state) {
     $('#Status').empty();
     $.ajax({
         type: "GET",
-        url: "../Workspace/GetWorkspaceStates",
+        url: "../Folder/GetFolderStates",
         dataType: 'json',
         success: function (response) {
             $('#Status').empty();
-            $("#Status").append('<option value="">Select a status for the workspace</option>');
+            $("#Status").append('<option value="">Select a status for the folder</option>');
 
             for (let i = 0; i < response.length; i++) {
                 if (response[i].row_id === state) {
@@ -468,7 +468,7 @@ function DisplayFolderDetailsModal(id) {
     GetAvailableFiles(id);
     $.ajax({
         "type": 'GET',
-        "url": '../Workspace/GetWorkspaceDetails/' + id,
+        "url": '../Folder/GetFolderDetails/' + id,
         "dataType": 'json',
         success: function (response) {
             $('#FolderName').html(response.name);
@@ -502,7 +502,7 @@ function GetAvailableFiles(id) {
     $("#availableFiles > tbody").empty();
     $.ajax({
         type: 'GET',
-        url: '../Workspace/GetDocumentsInWorkspace/' + id,
+        url: '../Folder/GetDocumentsInFolder/' + id,
         dataType: 'json',
         success: function (response) {
             let t = $('#availableFiles').DataTable();
@@ -533,7 +533,7 @@ function DisplayRenameModal(id) {
     $('#MessageDiv').hide();
     $.ajax({
         "type": 'GET',
-        "url": '../Workspace/GetWorkspaceDetails/' + id,
+        "url": '../Folder/GetFolderDetails/' + id,
         "dataType": 'json',
         success: function (response) {
             $('#CurrentFolderName').val(response.name);
@@ -560,7 +560,7 @@ function RenameFolder() {
     $('#MessageDiv').hide();
     $.ajax({
         "type": 'POST',
-        "url": '../Workspace/RenameWorkspace',
+        "url": '../Folder/RenameFolder',
         data: {
             "CurrentFolderName" : $('#CurrentFolderName').val(),
             "NewFolderName" : $('#NewFolderName').val(),
@@ -599,7 +599,7 @@ function RenameFolder() {
 function GetAvailableFolders() {
     $.ajax({
         type: 'GET',
-        url: '../Workspace/GetAvailableWorkspaces',
+        url: '../Folder/GetAvailableFolders',
         dataType: 'json',
         success: function (response) {
 
@@ -629,8 +629,8 @@ function GetAvailableFolders() {
                         
                         <div class="dropdown-menu">
                         <a onclick="DisplayFolderDetailsModal(${response[i].id});" class="dropdown-item" href="#">View Details</a>
-                        <a onclick="DisplayModifyFolderModal(${response[i].id});" class="dropdown-item" href="#">Modify Workspace</a>
-                        <a onclick="DisplayRenameModal(${response[i].id});" class="dropdown-item" href="#">Rename Workspace</a>
+                        <a onclick="DisplayModifyFolderModal(${response[i].id});" class="dropdown-item" href="#">Modify Folder</a>
+                        <a onclick="DisplayRenameModal(${response[i].id});" class="dropdown-item" href="#">Rename Folder</a>
                         <a onclick="DisplayGrantPrivilegesModal(${response[i].id});" class="dropdown-item" href="#">Manage Privileges</a>
                         <a onclick="DisplayPrivileges(${response[i].id});" class="dropdown-item" href="#">View Privileges</a>
                         </div>

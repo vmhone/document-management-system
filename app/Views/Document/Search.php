@@ -28,7 +28,7 @@
                                     <div id="DocumentName"></div>
                                     <div>&nbsp;</div>
 
-                                    <h6><i class="fas fa-folder"></i> Workspace</h6>
+                                    <h6><i class="fas fa-folder"></i> Folder</h6>
                                     <div id="FolderName"></div>
                                     <div>&nbsp;</div>
 
@@ -114,7 +114,7 @@
                                     <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Workspace</th>
+                                        <th>Folder</th>
                                         <th>Uploaded Date</th>
                                         <th>Version</th>
                                         <th>File Size</th>
@@ -221,7 +221,7 @@
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-md-2 col-form-label">Workspace</label>
+                        <label class="col-md-2 col-form-label">Folder</label>
                         <div class="col-md-10">
                             <select id="Folder" name="Folder" class="form-control select2">
 

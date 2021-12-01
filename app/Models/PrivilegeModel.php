@@ -116,7 +116,7 @@ class PrivilegeModel extends Model{
                 $response['privilege'] = PrivilegeOptions::NO_ACCESS;
                 $response['status']    = true;
                 return $response;
-            } else {
+            } else {+
                 $response['privilege'] = $row->privilege;
                 $response['status']    = true;
                 return $response;
@@ -556,19 +556,19 @@ class PrivilegeModel extends Model{
             // determine the message to display based on the operation
             if (isset($request['group_id'])) {
                 if ($request['privilege'] == PrivilegeOptions::READ) { 
-                    $response['remark'] = 'Read privilege successfully set on the workspace for the group';
+                    $response['remark'] = 'Read privilege successfully set on the folder for the group';
                 } else if ($request['privilege'] == PrivilegeOptions::WRITE) {
-                    $response['remark'] = 'Write privilege successfully set on the workspace for the group';
+                    $response['remark'] = 'Write privilege successfully set on the folder for the group';
                 } else {
-                    $response['remark'] = 'Privilege successfully revoked on the workspace for the group';
+                    $response['remark'] = 'Privilege successfully revoked on the folder for the group';
                 }
             } else {
                 if ($request['privilege'] == PrivilegeOptions::READ) {
-                    $response['remark'] = 'Read privilege successfully set on the workspace for the user';
+                    $response['remark'] = 'Read privilege successfully set on the folder for the user';
                 } else if ($request['privilege'] == PrivilegeOptions::WRITE) {
-                    $response['remark'] = 'Write privilege successfully set on the workspace for the user';
+                    $response['remark'] = 'Write privilege successfully set on the folder for the user';
                 } else {
-                    $response['remark'] = 'Privilege successfully revoked on the workspace for the user';
+                    $response['remark'] = 'Privilege successfully revoked on the folder for the user';
                 }
             } 
 
@@ -850,7 +850,7 @@ class PrivilegeModel extends Model{
                 $email_param['recipient']     = $row->email_address;
                 $email_param['email_message'] = $email_msg;
                 $email_param['submit_date']   = new Time('now');
-                $email_param['subject']       = $object_type == 0 ? 'Workspace Access' : 'Document Access';
+                $email_param['subject']       = $object_type == 0 ? 'Folder Access' : 'Document Access';
 
                 $email_logger->logOutgoingEmail($email_param);
             }
