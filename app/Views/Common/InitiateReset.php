@@ -68,7 +68,7 @@
                     </div>
                 </div>
                 <div class="mt-5 text-center">
-                    <p>© <?php echo date('Y'); ?> DMS. Developed by: <a target="_blank" href="https://ic-techafrica.com">IC-Tech Africa</a> | <a target="_blank" href="http://www.ahlmw.com">AHL Group</a></p>
+                    <p>© <?php echo date('Y'); ?></p>
                 </div>
 
             </div>
