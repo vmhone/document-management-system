@@ -1,4 +1,4 @@
 <?php
-header('public/index.php');
+header('location:public/index.php');
 exit;
 ?>

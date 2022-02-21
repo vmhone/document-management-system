@@ -51,12 +51,12 @@ class Security extends BaseController
         $routes      = $helper->flattenArray($_SESSION['routes']);
 
         // for hosted environments
-        if (sizeof($current_uri) > 3 && in_array('public', $current_uri)) {
-            $sanitised_uri = sprintf("/%s/%s", $current_uri[3], $current_uri[4]);
+        if (sizeof($current_uri) >= 3 && in_array('public', $current_uri)) {
+            $sanitised_uri = sprintf("/%s/%s", $current_uri[2], $current_uri[3]);
         } else {
             $sanitised_uri = sprintf("/%s/%s", $current_uri[1], $current_uri[2]);
         }
-
+        
         // user should not be allowed to access the resource
         if (!in_array($sanitised_uri, $routes)) {
             $location = sprintf('%s/%s',site_url(), 'Common/PermissionDenied');
