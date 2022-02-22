@@ -50,11 +50,21 @@ class Security extends BaseController
         $current_uri = array_filter(explode("/", $helper->getCurrentUri()));
         $routes      = $helper->flattenArray($_SESSION['routes']);
 
-        // for hosted environments
-        if (sizeof($current_uri) >= 3 && in_array('public', $current_uri)) {
-            $sanitised_uri = sprintf("/%s/%s", $current_uri[2], $current_uri[3]);
+        // remove the public
+        if (($key = array_search('public', $current_uri)) !== false) {
+            unset($current_uri[$key]);
+        }
+
+        $current_uri = array_values($current_uri);
+
+        if ($_SESSION['basepath_present'] > 0) {
+            if ($current_uri >= 3) {
+                $sanitised_uri = sprintf("/%s/%s/%s", $current_uri[0], $current_uri[1], $current_uri[2]);
+            } else {
+                $sanitised_uri = sprintf("/%s/%s", $current_uri[0], $current_uri[1]);
+            }
         } else {
-            $sanitised_uri = sprintf("/%s/%s", $current_uri[1], $current_uri[2]);
+            $sanitised_uri = sprintf("/%s/%s", $current_uri[0], $current_uri[1]);
         }
         
         // user should not be allowed to access the resource

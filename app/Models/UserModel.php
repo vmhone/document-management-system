@@ -493,6 +493,13 @@ class UserModel extends Model {
                 array_push($result_set, sprintf('%s%s', strtolower(trim($row->base_path)), strtolower(trim($row->route_path))));
             }
 
+            session_start();
+            if (strlen($row->base_path) > 0) {
+                $_SESSION['basepath_present'] = 1;
+            } else {
+                $_SESSION['basepath_present'] = 0;
+            }
+
             return $result_set;
             
         } catch (\Exception $ex) {
