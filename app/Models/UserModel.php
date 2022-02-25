@@ -494,6 +494,7 @@ class UserModel extends Model {
             }
 
             session_start();
+            
             if (strlen($row->base_path) > 0) {
                 $_SESSION['basepath_present'] = 1;
             } else {

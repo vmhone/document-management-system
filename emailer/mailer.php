@@ -78,8 +78,7 @@ if ($res = $con->query($query)) {
             $update_query.= 'WHERE `row_id` = ?  ';
             
             if ($stmt = mysqli_prepare($con, $update_query)){
-                mysqli_stmt_bind_param($stmt, "s", date('Y-m-d H:i:s'));
-                mysqli_stmt_bind_param($stmt, "i", $row->row_id);
+                mysqli_stmt_bind_param($stmt, "si", date('Y-m-d H:i:s'), $row->row_id);
                 mysqli_stmt_execute($stmt);
                 echo sprintf("Email sent to: %s\n", $row->recipient) . '<br />';
                 $mail = null;
