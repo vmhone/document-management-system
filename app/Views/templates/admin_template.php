@@ -249,7 +249,7 @@
     <?php
         if(isset($js_files)) foreach ($js_files as $js_file) {
     ?>
-        <script src="<?php echo $js_file ?>?version=<?php echo rand() ?>"></script>
+        <script src="<?php echo $js_file ?>"></script>
     <?php }
     ?>
 </body>
