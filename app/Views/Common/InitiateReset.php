@@ -6,15 +6,16 @@
     <title>Reset Password | Document Management System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Document Management System" name="description" />
+    <meta content="IC-Tech Africa" name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="<?php echo base_url() ?>/assets/images/favicon.ico">
 
     <!-- Bootstrap Css -->
-    <link href="<?php echo base_url(); ?>/assets/css/bootstrap.min.css?v=<?php echo mt_rand(); ?>" id="bootstrap-style" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url(); ?>/assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
     <!-- Icons Css -->
-    <link href="<?php echo base_url(); ?>/assets/css/icons.min.css?v=<?php echo mt_rand(); ?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url(); ?>/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
     <!-- App Css-->
-    <link href="<?php echo base_url(); ?>/assets/css/app.min.css?v=<?php echo mt_rand(); ?>" id="app-style" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url(); ?>/assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
 
 </head>
 
@@ -76,14 +77,14 @@
 </div>
 
 <!-- JAVASCRIPT -->
-<script src="<?php echo base_url() ?>/assets/libs/jquery/jquery.min.js?v=<?php echo mt_rand(); ?>"></script>
-<script src="<?php echo base_url() ?>/assets/libs/bootstrap/js/bootstrap.bundle.min.js?v=<?php echo mt_rand(); ?>"></script>
-<script src="<?php echo base_url() ?>/assets/libs/metismenu/metisMenu.min.js?v=<?php echo mt_rand(); ?>"></script>
-<script src="<?php echo base_url() ?>/assets/libs/simplebar/simplebar.min.js?v=<?php echo mt_rand(); ?>"></script>
-<script src="<?php echo base_url() ?>/assets/libs/node-waves/waves.min.js?v=<?php echo mt_rand(); ?>"></script>
+<script src="<?php echo base_url() ?>/assets/libs/jquery/jquery.min.js?"></script>
+<script src="<?php echo base_url() ?>/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="<?php echo base_url() ?>/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="<?php echo base_url() ?>/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="<?php echo base_url() ?>/assets/libs/node-waves/waves.min.js"></script>
 
-<script src="<?php echo base_url() ?>/assets/js/app.js?v=<?php echo mt_rand(); ?>"></script>
-<script src="<?php echo base_url() ?>/assets/custom/common/reset_password.js?v=<?php echo mt_rand(); ?>"></script>
+<script src="<?php echo base_url() ?>/assets/js/app.js"></script>
+<script src="<?php echo base_url() ?>/assets/custom/common/reset_password.js"></script>
 <!-- Sweet Alerts js -->
 
 </body>
