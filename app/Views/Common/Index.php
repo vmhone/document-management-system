@@ -10,11 +10,11 @@
     <link rel="shortcut icon" href="<?php echo base_url() ?>/assets/images/favicon.ico">
 
     <!-- Bootstrap Css -->
-    <link href="<?php echo base_url() ?>/assets/css/bootstrap.min.css?v=<?php echo mt_rand(); ?>" id="bootstrap-style" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url() ?>/assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
     <!-- Icons Css -->
-    <link href="<?php echo base_url() ?>/assets/css/icons.min.css?v=<?php echo mt_rand(); ?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url() ?>/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
     <!-- App Css-->
-    <link href="<?php echo base_url() ?>/assets/css/app.min.css?v=<?php echo mt_rand(); ?>" id="app-style" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url() ?>/assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
 
 </head>
 
