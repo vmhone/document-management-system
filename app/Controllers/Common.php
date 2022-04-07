@@ -79,7 +79,7 @@ class Common extends BaseController
             exit;
         }
 
-        if (!isset($_SESSION['two_factor'])) {
+        if (!array_key_exists('two_factor', $_SESSION)) {
             $location = sprintf('%s/%s',site_url(), 'Common/Index');
             header("Location: $location");
             exit;
@@ -99,7 +99,7 @@ class Common extends BaseController
             return $this->response->setJSON($json_data);
         }
 
-        if (!isset($_SESSION['two_factor'])) {
+        if (!array_key_exists('two_factor', $_SESSION)) {
             $json_data = [
                 'remark' => 'Access denied',
                 'status' => false,
@@ -127,7 +127,7 @@ class Common extends BaseController
             return $this->response->setJSON($json_data);
         }
 
-        if (!isset($_SESSION['two_factor'])) {
+        if (!array_key_exists('two_factor', $_SESSION)) {
             $json_data = [
                 'remark' => 'Access denied',
                 'status' => false
@@ -502,7 +502,7 @@ class Common extends BaseController
             $_SESSION['last_login'] = 'Never';
         }
 
-        if ($_SESSION['two_factor']) {
+        if (array_key_exists('two_factor', $_SESSION)) {
             return redirect()->to('/Common/OTP');
         } else {
             return redirect()->to('/Dashboard/Index');

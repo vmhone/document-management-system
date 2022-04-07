@@ -28,7 +28,7 @@ class Security extends BaseController
             }
         }
 
-        if ($_SESSION['two_factor']) {
+        if (array_key_exists('two_factor', $_SESSION)) {
             $location = sprintf('%s/%s',site_url(), 'Common/OTP');
             header("Location: $location");
             exit;
