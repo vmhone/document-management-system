@@ -10,7 +10,8 @@ class ParameterModel extends Model{
      * @return object
      * @throws Exception
      */
-    public function getParameter($param) {
+    public function getParameter($param): object
+    {
         try {
             $db = db_connect();
             $builder = $db->table('config');
@@ -29,7 +30,8 @@ class ParameterModel extends Model{
      * @throws Exception
      */
 
-    public function getAllParameters() {
+    public function getAllParameters(): array
+    {
         $result_set = [];
         try {
             $db = db_connect();
@@ -56,7 +58,8 @@ class ParameterModel extends Model{
      * @param array
      * @return array
      */
-    public function updateParameter($param) {
+    public function updateParameter($param): array
+    {
         try {
             $response = [];
             if (sizeof($param) > 0) {   
@@ -96,7 +99,8 @@ class ParameterModel extends Model{
      * @param array
      * @return bool
      */
-    public function createParameter($param) {
+    public function createParameter($param): bool
+    {
         try {
             $db = db_connect();
             $builder = $db->table('config');

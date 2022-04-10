@@ -12,7 +12,8 @@ class ZipModel extends Model {
      * @return array
      */
 
-    public function zipDocuments($files) {
+    public function zipDocuments($files): array
+    {
         $response = [];
         $filename = 'dms-download-' . time() . rand(1000, 9999) . '.zip';
 
@@ -56,18 +57,13 @@ class ZipModel extends Model {
                     }
                 }
                 $zip->close();
-
                 $response['status']   = true;
-                $response['filename'] = $filename;
-                $response['zip_path'] = $zip_path;
-                return $response;
-
             } else {
                 $response['status']   = false;
-                $response['filename'] = $filename;
-                $response['zip_path'] = $zip_path;
-                return $response;
             }
+            $response['filename'] = $filename;
+            $response['zip_path'] = $zip_path;
+            return $response;
         } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             $response['status']   = false;

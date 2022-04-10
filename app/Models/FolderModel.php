@@ -20,7 +20,8 @@ class FolderModel extends Model {
      * @return object
      * @throws Exception
      */
-    private function validateFolderExistence($folder_name) {
+    private function validateFolderExistence($folder_name): object
+    {
         try {
             $db = db_connect();
             
@@ -46,7 +47,8 @@ class FolderModel extends Model {
      * @return int
      * @throws Exception
      */
-    public function getFolderOwner($id) {
+    public function getFolderOwner(int $id): int
+    {
         try {
             $db = db_connect();
 
@@ -72,7 +74,8 @@ class FolderModel extends Model {
      * @param int
      * @return array
      */
-    public function getFolderDetails($id) {
+    public function getFolderDetails($id): array
+    {
         try {
             $db = db_connect();
             
@@ -114,10 +117,11 @@ class FolderModel extends Model {
     
     /**
      * Method gets a count of files in a particular folder
-     * @param int  $id
+     * @param int $id
      * @return int
      */
-    public function countDocumentsInFolder($id) {
+    public function countDocumentsInFolder(int $id): int
+    {
         try {
             $db = db_connect();
             $builder = $db->table('document');
@@ -135,7 +139,8 @@ class FolderModel extends Model {
      * @param bool $include_active_only
      * @return array
      */
-    public function getAvailableFolders($include_active_only = false) {
+    public function getAvailableFolders(bool $include_active_only = false): array
+    {
         try {
             $db = db_connect();
 
@@ -222,7 +227,8 @@ class FolderModel extends Model {
      * @param int $updated_by
      * @return array
      */
-    public function changeFolderState($id, $folder_state, $updated_by) {
+    public function changeFolderState(int $id, int $folder_state, int $updated_by): array
+    {
         try {
             $db = db_connect();
             
@@ -286,7 +292,8 @@ class FolderModel extends Model {
      * @param array $request
      * @return array
      */
-    public function renameFolder($request) {
+    public function renameFolder(array $request): array
+    {
         try {
             if (strcasecmp(trim($request['old_name']), trim($request['new_name'])) == 0) {
                 $response['remark']        = 'Unable to rename the folder. The old and new name are the same';
@@ -311,7 +318,7 @@ class FolderModel extends Model {
             $row = $this->validateFolderExistence($request['new_name']);
             
             // the folder exists
-            if (isset($row) && $row->id != $request['id']) {
+            if ($row->id != $request['id']) {
                  $response['remark']        = sprintf('Unable to rename the folder. Folder %s already exists', $request['new_name']);
                  $response['status']        = false;
                  $response['exception_msg'] = null;
@@ -351,7 +358,8 @@ class FolderModel extends Model {
      * @param bool $include_date
      * @return array
      */
-    public function searchForFolder($request, $include_date = false) {
+    public function searchForFolder(array $request, bool $include_date = false): array
+    {
         try {
             $db = db_connect();
             
@@ -394,7 +402,8 @@ class FolderModel extends Model {
      * @return array
      */
 
-    public  function getFolderStates() {
+    public  function getFolderStates(): array
+    {
         try {
             $db = db_connect();
 
@@ -437,7 +446,8 @@ class FolderModel extends Model {
      * @param bool $json_friendly
      * @return array
      */
-    public function getAvailableOwners($json_friendly = false) {
+    public function getAvailableOwners(bool $json_friendly = false): array
+    {
         try {
 
             $db = db_connect();
@@ -487,10 +497,11 @@ class FolderModel extends Model {
     
     /**
      * Method creates a folder
-     * @param  array $request
+     * @param array $request
      * @return array
      */
-    public function createFolder($request) {
+    public function createFolder(array $request): array
+    {
         try {
             
             $row = $this->validateFolderExistence($request['folder_name']);
@@ -501,7 +512,7 @@ class FolderModel extends Model {
                 $response['exception_msg'] = null;
                 return $response;
             }
-            
+
             $lib = new StringHelper();
             
             $db = db_connect();

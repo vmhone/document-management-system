@@ -13,7 +13,8 @@ class GroupModel extends Model
      * @return boolean
      * @throws Exception
      */
-    public  function doesGroupExist($group_name) {
+    public  function doesGroupExist($group_name): bool
+    {
         try {
             $db = db_connect();
             
@@ -24,7 +25,7 @@ class GroupModel extends Model
             $builder->where('group.name', $lib->formatName($group_name, true));
             $row = $builder->get()->getRow();
 
-            return $row->total_count > 0 ? true : false;
+            return $row->total_count > 0;
 
         } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
@@ -35,9 +36,10 @@ class GroupModel extends Model
     /**
      * Method gets the list of available groups
      * @param int $group_id
-     * @return string
+     * @return array
      */
-    public function getAvailableGroups($group_id = 0) {
+    public function getAvailableGroups(int $group_id = 0): array
+    {
         try {
             $db = db_connect();
             
@@ -97,7 +99,8 @@ class GroupModel extends Model
      * @param string
      * @return array
      */
-    public function createGroup($request) {
+    public function createGroup($request): array
+    {
         try {
             // does the group exist?
             if ($this->doesGroupExist($request['group_name'])) {
@@ -137,7 +140,8 @@ class GroupModel extends Model
      * @param array
      * @return array
      */
-    public function modifyGroup($request) {
+    public function modifyGroup($request): array
+    {
         try {
             $lib = new StringHelper();
 

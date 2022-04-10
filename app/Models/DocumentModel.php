@@ -51,19 +51,20 @@ class DocumentModel extends Model
      * @param bool Whether to include the sender or not
      * @return array
      */
-    public function sendDocumentViaEmail($id, $recipients, $include_sender) {
+    public function sendDocumentViaEmail($id, $recipients, $include_sender): array
+    {
         try {
             
             $mailing_list = [];
 
             if ($include_sender) {
-                array_push($mailing_list, $_SESSION['username']);
+                $mailing_list[] = $_SESSION['username'];
             }
 
             // add the existing recipients as well
             foreach ($recipients as $recipient) {
                 if (!in_array($recipient, $mailing_list)) {
-                    array_push($mailing_list, trim($recipient));
+                    $mailing_list[] = trim($recipient);
                 }
             }
 
@@ -124,7 +125,7 @@ class DocumentModel extends Model
 
             $logging_model = new LoggingModel();
 
-            // send an email to each recipient
+            // email each recipient
             foreach ($mailing_list as $recipient) {
                 $request['recipient']   = $recipient;
                 $request['submit_date'] = new Time('now');
@@ -149,8 +150,8 @@ class DocumentModel extends Model
      * @param int
      * @return array
      */
-    public function getIdsFromFileName($file_name, $folder) {
-
+    public function getIdsFromFileName($file_name, $folder): array
+    {
         $documents = [];
 
         try {
@@ -164,7 +165,7 @@ class DocumentModel extends Model
             $result = $builder->get();
 
             foreach ($result->getResult() as $row) { 
-                array_push($documents, $row->id);
+                $documents[] = $row->id;
             }
 
             return $documents;
@@ -183,7 +184,8 @@ class DocumentModel extends Model
      * @return boolean
      * @throws Exception
      */
-    public function doesDocumentExist($file_name, $version = 1, $folder = 0) {
+    public function doesDocumentExist($file_name, int $version = 1, int $folder = 0): bool
+    {
         try {
             $db = db_connect();
             $builder = $db->table('document');
@@ -203,7 +205,7 @@ class DocumentModel extends Model
 
             $query = $builder->get();
 
-            return $query->getRow()->total_count > 0 ? true : false;
+            return $query->getRow()->total_count > 0;
             
         } catch(Exception $e) {
             log_message('error', $e->getMessage());
@@ -216,7 +218,8 @@ class DocumentModel extends Model
      * @param int $folder
      * @return int
      */
-    public function countAllDocuments($folder = 0) {
+    public function countAllDocuments(int $folder = 0): int
+    {
         try {
             $db = db_connect();
             $builder = $db->table('document');
@@ -241,7 +244,8 @@ class DocumentModel extends Model
      * @param int $id
      * @return array
      */
-    public function getDocumentVersionHistory($id) {
+    public function getDocumentVersionHistory(int $id): array
+    {
         try {
             $db = db_connect();
 
@@ -315,7 +319,8 @@ class DocumentModel extends Model
      * @return array
      */
     
-    public function transferDocument($document_id, $source_folder, $destination_folder, $user_id) {
+    public function transferDocument(int $document_id, int $source_folder, int $destination_folder, int $user_id): array
+    {
         try {
             if ($source_folder == $destination_folder) {
                 $response['remark']        = 'Unable to transfer the document. The source and destination folder are the same';
@@ -450,9 +455,10 @@ class DocumentModel extends Model
      * @param int $folder_id
      * @param string $new_name
      * @param string $current_file_name
-     * @return mixed
+     * @return array
      */
-    public function renameDocument($doc_id, $folder_id, $new_name, $current_file_name) {
+    public function renameDocument(int $doc_id, int $folder_id, string $new_name, string $current_file_name): array
+    {
         try {
 
             $privilege_model = new PrivilegeModel();
@@ -555,7 +561,8 @@ class DocumentModel extends Model
      * @param int $folder
      * @return array
      */
-    protected function doesDocumentExistInFolder($file_name, $folder) {
+    protected function doesDocumentExistInFolder(string $file_name, int $folder): array
+    {
         try {
             if ($folder <= 0) {
                 $response['remark']        = 'The folder specified does not exist';
@@ -581,14 +588,13 @@ class DocumentModel extends Model
                 $response['remark']       .= 'already exists in the folder';
                 $response['status']        = true;
                 $response['exception_msg'] = null;
-                return $response;
             } else {
                 $response['remark']        = '';
                 $response['status']        = false;
                 $response['exception_msg'] = false;
-                return $response;
             }
-            
+            return $response;
+
         } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             
@@ -605,7 +611,8 @@ class DocumentModel extends Model
      * @param bool $include_date
      * @return array
      */
-    public function searchDocument($request, $include_date = false) {
+    public function searchDocument(array $request, bool $include_date = false): array
+    {
         try {
             $db = db_connect();
             
@@ -616,20 +623,13 @@ class DocumentModel extends Model
             $builder->join('document_keyword','document_keyword.document_id = document.id', 'left');
             $builder->join('folder', 'document.folder = folder.id', 'left');
             $builder->join('document_state', 'document.state = document_state.id', 'left');
-            
-            if (!$include_date) {
-                // the like part checks the other fields
-                if (strlen($request['search_keyword']) > 0) {
-                    $builder->like('keyword', strtoupper(trim($request['search_keyword'])));
-                    $builder->orLike('file_name', trim($request['search_keyword']));
-                    $builder->orLike('document.comment', trim($request['search_keyword']));
-                }
-            } else {
-                if (strlen($request['search_keyword']) > 0) {
-                    $builder->like('keyword', strtoupper(trim($request['search_keyword'])));
-                    $builder->orLike('file_name', trim($request['search_keyword']));
-                    $builder->orLike('document.comment', trim($request['search_keyword']));
-                }
+
+            if (strlen($request['search_keyword']) > 0) {
+                $builder->like('keyword', strtoupper(trim($request['search_keyword'])));
+                $builder->orLike('file_name', trim($request['search_keyword']));
+                $builder->orLike('document.comment', trim($request['search_keyword']));
+            }
+            if ($include_date) {
                 $builder->where('date_uploaded >=', $request['start_date']);
                 $builder->where('date_uploaded <=', $request['end_date']);
             }
@@ -710,7 +710,7 @@ class DocumentModel extends Model
             }
 
             // check if the result query contains one or more rows of data
-            $response['status'] = sizeof($result_set) <= 0 ? false : true;
+            $response['status'] = !(sizeof($result_set) <= 0);
 
             return $response;
             
@@ -732,7 +732,8 @@ class DocumentModel extends Model
      * @return object
      * @throws Exception
      */
-    protected function getOriginalDocumentFileName($id) {
+    protected function getOriginalDocumentFileName(int $id): object
+    {
         try {
             $db = db_connect();
             $builder = $db->table('document');
@@ -752,7 +753,8 @@ class DocumentModel extends Model
      * @param bool $include_archive
      * @return array
      */
-    public function getAvailableDocuments($folder = 0, $document = 0, $include_archive = false) {
+    public function getAvailableDocuments(int $folder = 0, int $document = 0, bool $include_archive = false): array
+    {
         try {
 
             $db = db_connect();
@@ -866,9 +868,10 @@ class DocumentModel extends Model
     /**
      * Method gets keywords for a particular document
      * @param int $doc_id
-     * @return string
+     * @return array
      */
-    protected function getDocumentKeywords($doc_id) {
+    protected function getDocumentKeywords(int $doc_id): array
+    {
         try {
             $db = db_connect();
 
@@ -911,7 +914,8 @@ class DocumentModel extends Model
      * @param array The list of documents to Zip
      * @return array 
      */
-    public function getDocumentsForZip($documents) {
+    public function getDocumentsForZip($documents): ?array
+    {
         try {
             $db = db_connect();
 
@@ -946,7 +950,8 @@ class DocumentModel extends Model
      * @param int $id
      * @return array
      */
-    public function getDocumentForDownload($id) {
+    public function getDocumentForDownload(int $id): array
+    {
         try {
             $db = db_connect();
 
@@ -989,7 +994,8 @@ class DocumentModel extends Model
      * @param array $request
      * @return array
      */
-    public  function restoreDocument($request) {
+    public function restoreDocument(array $request): array
+    {
         try {
 
             $privilege_model = new PrivilegeModel();
@@ -1076,12 +1082,13 @@ class DocumentModel extends Model
         }
     }
 
-    /** Method archives a document and it's history versions (if available)
+    /** Method archives a document, and it's history versions (if available)
      * @param array $request
      * @return array
      */
 
-    public function archiveDocument($request) {
+    public function archiveDocument(array $request): array
+    {
         try {
 
             $param['document_id'] = $request['document_id'];
@@ -1119,7 +1126,7 @@ class DocumentModel extends Model
 
             if ($main_doc->is_archived > 0) {
                 $response['status']        = false;
-                $response['remark']        = 'Unable to archive the document. It is aleady in archive state';
+                $response['remark']        = 'Unable to archive the document. It is already in archive state';
                 $response['exception_msg'] = null;
                 return $response;
             }
@@ -1177,7 +1184,8 @@ class DocumentModel extends Model
      * @param array $request
      * @return array
      */
-    public function changeDocumentState($request) {
+    public function changeDocumentState(array $request): array
+    {
         try {
 
             $param['document_id'] = $request['id'];
@@ -1224,7 +1232,8 @@ class DocumentModel extends Model
      * @param int $document_id
      * @return array
      */
-    public function modifyDocumentKeywords($keywords, $document_id) {
+    public function modifyDocumentKeywords(array $keywords, int $document_id): array
+    {
         try {
             if (sizeof($keywords) <= 0) {
                $response['remark']        = 'Unable to modify document keywords. No keywords provided';
@@ -1297,7 +1306,8 @@ class DocumentModel extends Model
      * @param int $id
      * @return int
      */
-    public function getDocumentLatestVersion($id) {
+    public function getDocumentLatestVersion(int $id): int
+    {
         try {
             $db = db_connect();
 
@@ -1305,7 +1315,7 @@ class DocumentModel extends Model
             $builder->select('version');
             $builder->where('id', $id);
             $builder->orderBy('version', 'DESC');
-            $builder->limit(1, 0);
+            $builder->limit(1);
 
             $row = $builder->get()->getRow();
             return isset($row) ? $row->version : 0;
@@ -1319,9 +1329,10 @@ class DocumentModel extends Model
     /**
      * Method sends a notification to a user/groups of users when a document is uploaded
      * @param array $request
-     * @return bool
+     * @return void
      */
-    private function sendNotification($request) {
+    private function sendNotification(array $request): void
+    {
         try {
             $db = db_connect();
             $recipients = [];
@@ -1336,14 +1347,14 @@ class DocumentModel extends Model
             } else if ($request['action_type'] == 1) {
                 $template->where('parameter_name', 'document_updated');
             } else {
-                return false;
+                return;
             }
 
             $email_template = $template->get()->getRow();
 
             if (!isset($email_template)) {
-                log_message('error', sprintf('Missing template - Document Update/Uploaded'));
-                return false;
+                log_message('error', 'Missing template - Document Update/Uploaded');
+                return;
             }
 
             $template = $email_template->parameter_value;
@@ -1361,7 +1372,7 @@ class DocumentModel extends Model
             if (count($request['users']) > 0) {
                 foreach ($request['users'] as $user_id) {
                     if (!in_array($user_id, $recipients)) {
-                        array_push($recipients, $user_id);
+                        $recipients[] = $user_id;
                     }
                 }
             }
@@ -1375,7 +1386,7 @@ class DocumentModel extends Model
                     if (sizeof($group_members) > 0) {
                         foreach ($group_members as $member) {
                             if (!in_array($member, $recipients)) {
-                                array_push($recipients, $member);
+                                $recipients[] = $member;
                             }
                         }
                     }
@@ -1394,14 +1405,14 @@ class DocumentModel extends Model
 
                 foreach ($result->getResult() as $row) {
                     if (!in_array($row->user_id, $recipients)) {
-                        array_push($recipients, $row->user_id);
+                        $recipients[] = $row->user_id;
                     }
                 }
             }
 
-            // we have no one to send an email to in this case...
+            // we have no one to email in this case...
             if (sizeof($recipients) <= 0) {
-                return false;
+                return;
             }
 
             // get the authorising user details
@@ -1457,11 +1468,11 @@ class DocumentModel extends Model
 
                 $logging_model->logOutgoingEmail($email_param);
             }
-            
-            return true;
+
+            return;
         } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
-            return false;
+            return;
         }
     }
 
@@ -1472,7 +1483,8 @@ class DocumentModel extends Model
      * @param bool $is_update
      * @return array
      */
-    public function uploadDocument($request, $keywords, $is_update = false) {
+    public function uploadDocument(array $request, array $keywords, bool $is_update = false): array
+    {
 
         $db = null;
         $current_id = 0;

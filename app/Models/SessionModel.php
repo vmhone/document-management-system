@@ -12,7 +12,8 @@ class SessionModel extends Model
      * @param array
      * @return bool
      */
-    public function createSession($param) {
+    public function createSession($param): bool
+    {
         try {
             $db = db_connect();
 
@@ -40,7 +41,8 @@ class SessionModel extends Model
      * Method deletes inactive sessions
      * @return bool
      */
-    public function deleteInactiveSessions() {
+    public function deleteInactiveSessions(): bool
+    {
         try {            
             $db = db_connect();
             
@@ -61,7 +63,8 @@ class SessionModel extends Model
      * @param string
      * @return bool
      */
-    public function endSession($id) {
+    public function endSession($id): bool
+    {
         try {
             $db = db_connect();
 
@@ -99,9 +102,10 @@ class SessionModel extends Model
     /**
      * Method updates a session
      * @param array
-     * @return bool
+     * @return void
      */
-    private function updateSession($param) {
+    private function updateSession($param): void
+    {
         try {  
             $db = db_connect();
 
@@ -110,10 +114,10 @@ class SessionModel extends Model
             $builder->where('id', $param['session_id']);
             $builder->update();
 
-            return true;
+            return;
         } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
-            return false;
+            return;
         }
     }
 
@@ -122,7 +126,8 @@ class SessionModel extends Model
      * @param array
      * @return bool
      */
-    public function isSessionValid($param) {
+    public function isSessionValid($param): bool
+    {
         try {
             $db = db_connect();
 

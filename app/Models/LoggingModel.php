@@ -8,7 +8,8 @@ class LoggingModel extends Model {
      * @param array
      * @return bool
      */
-    public function logOutgoingEmail($param) {
+    public function logOutgoingEmail($param): bool
+    {
         try {
             $db = db_connect();
             $builder = $db->table('outgoing_email');

@@ -2,10 +2,12 @@
 
 use CodeIgniter\Model;
 use CodeIgniter\I18n\Time;
+use Config\Services;
 use CustomHelper\Common\StringHelper;
-use PHPMailer\PHPMailer\Exception;
 use DateTime;
+use Exception;
 use UserRole;
+use function db_connect;
 
 require_once APPPATH . '/Libraries/StringHelper.php';
 require_once APPPATH . '/Models/UserRole.php';
@@ -18,17 +20,18 @@ class UserModel extends Model {
       * @return boolean
       * @throws Exception
       */
-     protected function doesUserExist($email_address) {
+     protected function doesUserExist(string $email_address): bool
+     {
         try {
             $db = db_connect();
               
             $builder = $db->table('user');
             $builder->where('email_address', trim($email_address));
             $row = $builder->get()->getRow();
-            return isset($row) ? true : false;
-        } catch (\Exception $ex) {
+            return isset($row);
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
-            throw new \Exception($ex->getMessage());
+            throw new Exception($ex->getMessage());
         }
     }
 
@@ -38,7 +41,8 @@ class UserModel extends Model {
      * @param int $user_id
      * @return bool
      */
-    protected function isEmailAddressInUse($email_address, $user_id) {
+    protected function isEmailAddressInUse(string $email_address, int $user_id): bool
+    {
          try {
             $db = db_connect();
 
@@ -51,9 +55,9 @@ class UserModel extends Model {
                 return false;
             }
 
-            return $row->id == $user_id ? false : true;
+            return !($row->id == $user_id);
 
-         } catch (\Exception $ex) {
+         } catch (Exception $ex) {
              log_message('error', $ex->getMessage());
              return true;
          }
@@ -65,7 +69,8 @@ class UserModel extends Model {
      * @return array
      */
     
-    public function getGroupsForUser($id) {
+    public function getGroupsForUser(int $id): array
+    {
         try {
             $db = db_connect();
 
@@ -89,7 +94,7 @@ class UserModel extends Model {
             }
 
             return $result_set;
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             $response['returned_rows'] = 0;
             $response['status']        = false;
             $response['exception_msg'] = $ex->getMessage();
@@ -101,14 +106,15 @@ class UserModel extends Model {
             return $response;
         }
     }
-    
+
     /**
      * Method verifies a user by ID
-     * @param  int $id
+     * @param int $id
      * @return object
      * @throws Exception
      */
-    protected function verifyUserById($id) {
+    protected function verifyUserById(int $id): object
+    {
         try {
             $db = db_connect();
             
@@ -117,9 +123,9 @@ class UserModel extends Model {
             $builder->where('id', $id);
             return $builder->get()->getRow();
 
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
-            throw new \Exception($ex->getMessage());
+            throw new Exception($ex->getMessage());
         }
     }
 
@@ -127,8 +133,10 @@ class UserModel extends Model {
      * Method verifies a user by checking the email address
      * @param string
      * @return object
+     * @throws Exception
      */
-    protected function verifyUserByEmail($email_address) {
+    protected function verifyUserByEmail($email_address): object
+    {
         try {
             $db = db_connect();
 
@@ -136,9 +144,9 @@ class UserModel extends Model {
             $builder->select('id, first_name, last_name, state');
             $builder->where('email_address', trim($email_address));
             return $builder->get()->getRow();
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
-            throw new \Exception($ex->getMessage());
+            throw new Exception($ex->getMessage());
         }
     }
 
@@ -147,7 +155,8 @@ class UserModel extends Model {
      * @return array
      */
     
-    public function getAvailableRoles() {
+    public function getAvailableRoles(): array
+    {
         try {
             $db = db_connect();
             
@@ -173,7 +182,7 @@ class UserModel extends Model {
             
             return $response;
             
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             
             $response['returned_rows'] = 0;
@@ -190,7 +199,8 @@ class UserModel extends Model {
      * @param int
      * @return array
      */
-    public function getAvailableUsers($current_user_id = 0, $id_to_fetch = 0) {
+    public function getAvailableUsers($current_user_id = 0, $id_to_fetch = 0): array
+    {
         try {        
             $db = db_connect();
             
@@ -250,7 +260,7 @@ class UserModel extends Model {
                   'allocated_quota'      => number_to_size($row->quota, 2),
                   'used_quota'           => number_to_size($used_quota['quota'], 2),
                   'remaining_quota'      => number_to_size($row->quota - $used_quota['quota'], 2),
-                  'display_quota'        => $row->role_id != UserRole::ADMINISTRATOR ? true : false,
+                  'display_quota'        => $row->role_id != UserRole::ADMINISTRATOR,
                   'quota'                => $row->quota
                 );
             }
@@ -261,7 +271,7 @@ class UserModel extends Model {
             $response['remark']        = '';
             
             return $response;
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             $response['returned_rows'] = 0;
             $response['result_set']    = null;
@@ -277,7 +287,8 @@ class UserModel extends Model {
      * @param bool
      * @return array
      */
-    public function getUserDetails($id, $is_login = true) {
+    public function getUserDetails($id, $is_login = true): array
+    {
         try {
             $db = db_connect();
             
@@ -309,7 +320,7 @@ class UserModel extends Model {
 
             return $response;
 
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             $response['result_set'] = null;
             $response['status']     = false;
@@ -321,9 +332,10 @@ class UserModel extends Model {
     /**
      * Method locks/unlocks a profile
      * @param array
-     * @return bool
+     * @return void
      */
-    private function changeProfileState($request) {
+    private function changeProfileState($request): void
+    {
         try {
             $db = db_connect();
 
@@ -342,10 +354,10 @@ class UserModel extends Model {
             $builder->where('id', $request['id']);
             $builder->update();
 
-            return true;
-        } catch (\Exception $ex) {
+            return;
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
-            return false;
+            return;
         }
     }
 
@@ -355,7 +367,8 @@ class UserModel extends Model {
      * @return array 
      */
     
-    public function authenticateLogin($request) {
+    public function authenticateLogin($request): array
+    {
         try {
             $db = db_connect();
 
@@ -387,10 +400,10 @@ class UserModel extends Model {
                 $unlock_time  = strtotime($row->unlock_time);
                 $current_time = time();
 
-                $minutes = round(($unlock_time - $current_time) / 60, 0);
+                $minutes = round(($unlock_time - $current_time) / 60);
 
                 if ($minutes <= 1) {
-                    $response['remark'] = sprintf('Profile locked. Try again in a minute', $minutes);
+                    $response['remark'] = 'Profile locked. Try again in a minute';
                 } else {
                     $response['remark'] = sprintf('Profile locked. Try again in %s minutes', $minutes);
                 }
@@ -462,7 +475,7 @@ class UserModel extends Model {
 
             return $response;
             
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             $response['remark']        = 'Something went wrong while processing your request';
             $response['status']        = false;
@@ -479,7 +492,8 @@ class UserModel extends Model {
      * @param int
      * @return array
      */
-    private function getRoutes($id) {
+    private function getRoutes($id): array
+    {
         $result_set = [];
         try {
             $db = db_connect();
@@ -489,21 +503,25 @@ class UserModel extends Model {
 
             $result = $builder->get();
 
-            foreach ($result->getResult() as $row) {
-                array_push($result_set, sprintf('%s%s', strtolower(trim($row->base_path)), strtolower(trim($row->route_path))));
-            }
-
             session_start();
-            
-            if (strlen($row->base_path) > 0) {
-                $_SESSION['basepath_present'] = 1;
-            } else {
-                $_SESSION['basepath_present'] = 0;
-            }
 
+            $i = 0;
+
+            foreach ($result->getResult() as $row) {
+                $result_set[] = sprintf('%s%s', strtolower(trim($row->base_path)), strtolower(trim($row->route_path)));
+                $i+=1;
+
+                if ($i == 1) {
+                    if (strlen($row->base_path) > 0) {
+                        $_SESSION['basepath_present'] = 1;
+                    } else {
+                        $_SESSION['basepath_present'] = 0;
+                    }
+                }
+            }
             return $result_set;
             
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             return $result_set;
         }
@@ -513,9 +531,9 @@ class UserModel extends Model {
      * Method logs platform details to the database
      * @param  array
      * @return bool
-     * @throws Exception
      */
-    public function logPlatformDetails($request) {
+    public function logPlatformDetails($request): bool
+    {
         try {
             $db = db_connect();
 
@@ -533,17 +551,16 @@ class UserModel extends Model {
             $builder->insert($data);
             return true;
 
-        } catch(\Exception $ex) {
+        } catch(Exception $ex) {
             log_message('error', $ex->getMessage());
             return false;
         }
     }
-    
+
     /**
      * Method logs a login attempt
-     * @param  array
+     * @param array
      * @return void
-     * @throws Exception
      */
     private function logLoginAttempt($request) {
         try {
@@ -562,7 +579,7 @@ class UserModel extends Model {
             
             $user_activity->insert($data);
             return;
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             return;
         }
@@ -573,7 +590,8 @@ class UserModel extends Model {
      * @param int
      * @return bool
      */
-    private function hasPasswordExpired($id) {
+    private function hasPasswordExpired($id): bool
+    {
         try {
             $parameter_model = new ParameterModel();
             $row = $parameter_model->getParameter('max_password_age');
@@ -593,9 +611,9 @@ class UserModel extends Model {
                 return false;
             }
 
-            return $result->password_age >= $row->parameter_value ? true : false;
+            return $result->password_age >= $row->parameter_value;
 
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             return false;
         }
@@ -606,7 +624,8 @@ class UserModel extends Model {
      * @param array
      * @return array
      */
-    public function initiatePasswordReset($request) {
+    public function initiatePasswordReset($request): array
+    {
         try {
             // does the user profile exist?
             $row = $this->verifyUserByEmail($request['email_address']);
@@ -654,7 +673,7 @@ class UserModel extends Model {
             
             return $response;
             
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             
             $response['remark']        = 'Something went wrong while processing your request';
@@ -671,7 +690,8 @@ class UserModel extends Model {
      * @return array
      */
     
-    public function isTokenValid($request) {
+    public function isTokenValid($request): array
+    {
         try {
             // check if the token exists
             $db = db_connect();
@@ -732,7 +752,7 @@ class UserModel extends Model {
             
             return $response;
             
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             $response['remark']        = 'Something went wrong while processing your request';
             $response['status']        = false;
@@ -744,10 +764,11 @@ class UserModel extends Model {
 
     /**
      * Method modifies a user profile
-     * @param type
-     * @return type
+     * @param array
+     * @return array
      */
-    public function modifyProfile($request) {
+    public function modifyProfile($request): array
+    {
         try {
             // check if the user ID exists...
             $row = $this->verifyUserById($request['user_id']);
@@ -775,14 +796,15 @@ class UserModel extends Model {
             if ($request['role'] != UserRole::ADMINISTRATOR && $request['quota'] >= 0) {
                 $quota_model = new QuotaModel();
 
-                // what is the current used quota?
+                // what is the used quota?
                 $used_quota = $quota_model->computeUsedQuota($request['user_id']);
                 
                 helper('number');
 
                 if ($used_quota['quota'] > ($request['quota'] * 1024 * 1024)) {
                     $response['remark'] = sprintf('Unable to save the changes. Used quota (%s) is more than requested quota (%s)',
-                                          number_to_size($used_quota['quota'], 2), number_to_size($request['quota'] * 1024 * 1024), 2);
+                                          number_to_size($used_quota['quota'], 2),
+                                          number_to_size(($request['quota'] * 1024 * 1024), 2));
                     $response['status'] = false;
                     return $response;
                 }
@@ -819,7 +841,7 @@ class UserModel extends Model {
                 
             return $response;
             
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             
             $response['remark']        = 'Something went wrong while processing your request';
@@ -832,10 +854,11 @@ class UserModel extends Model {
     
     /**
      * Method resets a password using a token (self reset)
-     * @param type $request
-     * @return type $response
+     * @param array $request
+     * @return array $response
      */
-    public function resetPasswordUsingToken($request) {
+    public function resetPasswordUsingToken(array $request): array
+    {
         try {
             $row = $this->verifyUserById($request['user_id']);
             
@@ -897,7 +920,7 @@ class UserModel extends Model {
             }
             
             $lib = new StringHelper();
-            $new_password = $lib->generateRandomPassword(8);
+            $new_password = $lib->generateRandomPassword();
 
             // get the user details...
             $user = $db->table('user');
@@ -938,7 +961,7 @@ class UserModel extends Model {
             
             return $response;
             
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             
             $response['remark']        = 'Something went wrong while processing your request';
@@ -955,7 +978,8 @@ class UserModel extends Model {
      * @param $password
      * @return bool
      */
-    protected  function logCurrentPasswordToHistory($user_id, $password) {
+    protected  function logCurrentPasswordToHistory($user_id, $password): bool
+    {
         try {
             $db = db_connect();
             $logger = $db->table('password_history');
@@ -970,7 +994,7 @@ class UserModel extends Model {
 
             return true;
 
-        } catch(\Exception $ex) {
+        } catch(Exception $ex) {
             log_message('error', $ex->getMessage());
             return false;
         }
@@ -978,10 +1002,12 @@ class UserModel extends Model {
 
     /**
      * Method flags a token as used
-     * @param string
-     * @return bool
+     * @param $token
+     * @param $user_id
+     * @return void
      */
-    private function flagTokenAsUsed($token, $user_id) {
+    private function flagTokenAsUsed($token, $user_id): void
+    {
         try {
             $db = db_connect();
             $builder = $db->table('password_reset');
@@ -992,19 +1018,21 @@ class UserModel extends Model {
 
             $builder->update();
 
-            return true;
-        } catch(\Exception $ex) {
+            return;
+        } catch(Exception $ex) {
             log_message('error', $ex->getMessage());
-            return false;
+            return;
         }
     }
 
     /**
      * Method flags a token as expired
-     * @param string
-     * @return bool
+     * @param $token
+     * @param $user_id
+     * @return void
      */
-    private function flagTokenAsExpired($token, $user_id) {
+    private function flagTokenAsExpired($token, $user_id): void
+    {
         try {
             $db = db_connect();
             $builder = $db->table('password_reset');
@@ -1015,10 +1043,10 @@ class UserModel extends Model {
             
             $builder->update();
 
-            return true;
-        } catch(\Exception $ex) {
+            return;
+        } catch(Exception $ex) {
             log_message('error', $ex->getMessage());
-            return false;
+            return;
         }
     }
 
@@ -1028,7 +1056,8 @@ class UserModel extends Model {
      * @param $id
      * @return array
      */
-    public function verifyOtp($code, $id) {
+    public function verifyOtp($code, $id): array
+    {
         $response = [];
         try {
             $db = db_connect();
@@ -1059,24 +1088,21 @@ class UserModel extends Model {
                     $this->generateOtp($id);
                     $response['remark'] = 'OTP has expired. Please check your email for a new OTP';
                     $response['status'] = false;
-                    $response['max_attempts'] = $max_attempts->parameter_value;
-                    return $response;
                 } else {
                     $response['remark']       = '';
                     $response['status']       = true;
                     $response['otp_valid']    = true;
-                    $response['max_attempts'] = $max_attempts->parameter_value;
-                    return $response;
                 }
+                $response['max_attempts'] = $max_attempts->parameter_value;
             } else {
                 $response['max_attempts'] = $max_attempts->parameter_value;
                 $response['remark']       = 'Invalid OTP provided. Please try again';
                 $response['status']       = false;
                 $response['otp_valid']    = false;
-                return $response;
             }
+            return $response;
 
-        } catch(\Exception $ex) {
+        } catch(Exception $ex) {
             log_message('error', $ex->getMessage());
             $response['remark'] = 'Something went wrong while processing your request';
             $response['status'] = false;
@@ -1089,7 +1115,8 @@ class UserModel extends Model {
      * @param $id
      * @return array
      */
-    public function generateOtp($id) {
+    public function generateOtp($id): array
+    {
         $response = [];
 
         try {
@@ -1132,7 +1159,9 @@ class UserModel extends Model {
 
             // user probably does not exist
             if ($user_response['result_set'] == null) {
-                return false;
+                $response['status'] = false;
+                $response['remark'] = 'Unable to generate an OTP. User does not exist';
+                return $response;
             }
 
             $row = $user_response['result_set'];
@@ -1150,7 +1179,7 @@ class UserModel extends Model {
 
             return $response;
 
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             $response['status'] = false;
             $response['remark'] = 'Something went wrong while processing your request';
@@ -1163,7 +1192,8 @@ class UserModel extends Model {
      * @param  array
      * @return array
      */
-    public function resetPassword($request) {
+    public function resetPassword($request): array
+    {
         try {
             $row = $this->verifyUserById($request['user_id']);
             
@@ -1176,7 +1206,7 @@ class UserModel extends Model {
             }
             
             $lib = new StringHelper();
-            $new_password = $lib->generateRandomPassword(8);
+            $new_password = $lib->generateRandomPassword();
             
             $db = db_connect();
             
@@ -1204,7 +1234,7 @@ class UserModel extends Model {
             // unlock the profile if locked
             $this->changeProfileState($reset_param);
 
-            // send the new credendtials
+            // send the new credentials
             $this->sendPasswordResetEmail($email_param);
 
             $response['name']          =
@@ -1214,7 +1244,7 @@ class UserModel extends Model {
             
             return $response;
            
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             
             $response['remark']        = 'Something went wrong while processing your request';
@@ -1229,9 +1259,10 @@ class UserModel extends Model {
      * Method checks if a password is being re-used
      * @param string $password
      * @param int $user_id
-     * @return bool
+     * @return array
      */
-    private function isPasswordInHistory($password, $user_id) {
+    private function isPasswordInHistory(string $password, int $user_id): array
+    {
         try {
             $parameter_model = new ParameterModel();
             $row = $parameter_model->getParameter('max_remember_passwords');
@@ -1258,11 +1289,11 @@ class UserModel extends Model {
             $count = $query->getRow()->total_count;
 
             $response['remember_count'] = $row->parameter_value;
-            $response['status'] = $count > 0 ? true : false;
+            $response['status'] = $count > 0;
             $response['password_count'] = $count;
 
             return $response;
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             $response['remember_count'] = 0;
             $response['status'] = true;
@@ -1276,7 +1307,8 @@ class UserModel extends Model {
      * @param string $password
      * @return array
      */
-    private function checkPasswordComplexity($password) {
+    private function checkPasswordComplexity(string $password): array
+    {
         $uppercase     = preg_match('@[A-Z]@', $password);
         $lowercase     = preg_match('@[a-z]@', $password);
         $number        = preg_match('@[0-9]@', $password);
@@ -1286,8 +1318,7 @@ class UserModel extends Model {
             $param_model = new ParameterModel();
             $row         = $param_model->getParameter('min_password_length');
             $min_length  = $row->parameter_value;
-        } catch (\Exception $ex) {
-            $min_length = 0;
+        } catch (Exception $ex) {
             $response['remark'] = 'Something went wrong while processing your request: ' . $ex->getMessage();
             $response['status'] = false;
             return $response;
@@ -1325,7 +1356,8 @@ class UserModel extends Model {
      * @param array $request
      * @return bool
      */
-    public function isPasswordValid($request) {
+    public function isPasswordValid(array $request): bool
+    {
         try {
             $db = db_connect();
 
@@ -1340,8 +1372,8 @@ class UserModel extends Model {
 
             $lib = new StringHelper();
             $hashed_password_form = $lib->hashPassword($request['password']);
-            return strcmp($hashed_password_form, $row->password) === 0 ? true : false;
-        } catch (\Exception $ex) {
+            return strcmp($hashed_password_form, $row->password) === 0;
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             return false;
         }
@@ -1352,7 +1384,8 @@ class UserModel extends Model {
      * @param array $request
      * @return array
      */
-    public function changeUserPassword($request) {
+    public function changeUserPassword(array $request): array
+    {
         try {
             // the current and new passwords must not be the same
             if ($request['current_password'] == $request['new_password']) {
@@ -1386,7 +1419,7 @@ class UserModel extends Model {
 
                 if ($result['status']) {
                     if ($result['remember_count'] == 1) {
-                        $response['remark'] = sprintf('You are not allowed to repeat your last password');
+                        $response['remark'] = 'You are not allowed to repeat your last password';
                     } else {
                         $response['remark'] = sprintf('You are not allowed to repeat your last %s passwords', $result['remember_count']);
                     }
@@ -1400,7 +1433,7 @@ class UserModel extends Model {
                 $parameter_model = new ParameterModel();
                 $complex = $parameter_model->getParameter('check_password_complexity');
 
-                if(isset($complex) && (int) $complex->parameter_value === 1) {
+                if((int) $complex->parameter_value === 1) {
 
                     $complex_response = $this->checkPasswordComplexity($request['new_password']);
 
@@ -1439,18 +1472,16 @@ class UserModel extends Model {
 
                 $response['remark']        = 'Password successfully changed';
                 $response['status']        = true;
-                $response['exception_msg'] = null;
-                
-                return $response;
+
             } else {
                 $response['remark']        = 'Incorrect password provided. The password has not been changed';
                 $response['status']        = false;
-                $response['exception_msg'] = null;
-                
-                return $response;
+
             }
-            
-        } catch (\Exception $ex) {
+            $response['exception_msg'] = null;
+            return $response;
+
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             
             $response['remark']         = 'Something went wrong while processing your request';
@@ -1466,7 +1497,8 @@ class UserModel extends Model {
      * @param array $request
      * @return array
      */
-    public function createUser($request) {
+    public function createUser(array $request): array
+    {
         try {            
             if ($this->doesUserExist($request['email_address'])) {
                 $response['remark']        = sprintf('The username %s already exists. Please try a different email address', $request['email_address']);
@@ -1475,13 +1507,13 @@ class UserModel extends Model {
                 return $response;
             }
             
-            $db = \db_connect();
+            $db = db_connect();
             
             $lib = new StringHelper();
             
             $builder = $db->table('user');
             
-            $new_password = $lib->generateRandomPassword(8);
+            $new_password = $lib->generateRandomPassword();
 
             if ($request['role'] == UserRole::ADMINISTRATOR) {
                 $data = [
@@ -1513,11 +1545,11 @@ class UserModel extends Model {
             
             $builder->insert($data);
             
-            $emailer['name']          = sprintf('%s %s', $lib->formatName($request['first_name']), $lib->formatName($request['last_name']));
-            $emailer['email_address'] = $request['email_address'];
-            $emailer['new_password']  = $new_password;
+            $email['name']          = sprintf('%s %s', $lib->formatName($request['first_name']), $lib->formatName($request['last_name']));
+            $email['email_address'] = $request['email_address'];
+            $email['new_password']  = $new_password;
             
-            $this->sendNewUserEmail($emailer);
+            $this->sendNewUserEmail($email);
             
             $response['remark']        = 'User profile successfully created. Credentials sent via email';
             $response['status']        = true;
@@ -1525,7 +1557,7 @@ class UserModel extends Model {
             
             return $response;
             
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             
             $response['remark']        = 'Something went wrong while processing your request';
@@ -1539,9 +1571,9 @@ class UserModel extends Model {
     /**
      * Method sends an email with the link to initiate the password request
      * @param array $request
-     * @return array
+     * @throws Exception
      */
-    protected function sendResetInitiateEmail($request) {
+    protected function sendResetInitiateEmail(array $request) {
         try {
             $db = db_connect();
         
@@ -1553,7 +1585,7 @@ class UserModel extends Model {
 
             if (!isset($row)) {//
                 log_message('error', sprintf('Missing template: %s', 'password_self_reset_request'));
-                throw new \Exception('Missing template: password_self_reset_request');
+                throw new Exception('Missing template: password_self_reset_request');
             }
 
             // transform the email template
@@ -1575,7 +1607,7 @@ class UserModel extends Model {
             $config['charset']     = 'utf-8';
             $config['priority']    = 1;
   
-            $email = \Config\Services::email($config);
+            $email = Services::email($config);
             $email->setFrom($parameters['sender_address'], $parameters['system_id']);
             $email->setTo($request['email_address']);
             $email->setReplyTo($parameters['no_reply_address'], $parameters['system_id']);
@@ -1612,9 +1644,9 @@ class UserModel extends Model {
  
             return;
 
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
-            throw new \Exception($ex->getMessage());
+            throw new Exception($ex->getMessage());
         }
     }
 
@@ -1622,8 +1654,9 @@ class UserModel extends Model {
      * Method sends an email when a new profile has been created
      * @param array $request
      * @return void
+     * @throws Exception
      */
-    protected function sendNewUserEmail($request) {
+    protected function sendNewUserEmail(array $request) {
         try {
             $db = db_connect();
         
@@ -1658,7 +1691,7 @@ class UserModel extends Model {
             $config['charset']     = 'utf-8';
             $config['priority']    = 1;
   
-            $email = \Config\Services::email($config);
+            $email = Services::email($config);
             $email->setFrom($parameters['sender_address'], $parameters['system_id']);
             $email->setTo($request['email_address']);
 
@@ -1695,9 +1728,9 @@ class UserModel extends Model {
 
             return;
 
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
-            throw new \Exception($ex->getMessage());
+            throw new Exception($ex->getMessage());
         }
     }
 
@@ -1707,7 +1740,7 @@ class UserModel extends Model {
      * @return void
      */
 
-    protected function sendPasswordChangeEmail($request) {
+    protected function sendPasswordChangeEmail(array $request) {
         try {
             $db = db_connect();
 
@@ -1740,7 +1773,7 @@ class UserModel extends Model {
             $email_logger->logOutgoingEmail($email_param);
 
             return;
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             return;
         }
@@ -1749,8 +1782,10 @@ class UserModel extends Model {
     /**
      * Method sends an email with the OTP
      * @param array $request
+     * @return bool
      */
-    protected function sendOtpEmail($request) {
+    protected function sendOtpEmail(array $request): bool
+    {
         try {
             $db = db_connect();
 
@@ -1762,7 +1797,7 @@ class UserModel extends Model {
 
             if (!isset($row)) {
                 log_message('error', sprintf('Missing template: %s', 'otp'));
-                throw new \Exception('Missing template: otp');
+                throw new Exception('Missing template: otp');
             }
 
             $parameter_model = new ParameterModel();
@@ -1783,7 +1818,7 @@ class UserModel extends Model {
             $config['charset']     = 'utf-8';
             $config['priority']    = 1;
 
-            $email = \Config\Services::email($config);
+            $email = Services::email($config);
             $email->setFrom($parameters['sender_address'], $parameters['system_id']);
             $email->setTo($request['email_address']);
 
@@ -1806,7 +1841,7 @@ class UserModel extends Model {
             }
 
             return $result;
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             return false;
         }
@@ -1814,10 +1849,11 @@ class UserModel extends Model {
 
     /**
      * Method sends an email with the new password after a successful password reset
-     * @param  array $request
+     * @param array $request
      * @return void
+     * @throws Exception
      */
-    protected function sendPasswordResetEmail($request) {
+    protected function sendPasswordResetEmail(array $request) {
         try {
             // get the password reset message from email template
             $db = db_connect();
@@ -1851,7 +1887,7 @@ class UserModel extends Model {
             $config['charset']     = 'utf-8';
             $config['priority']    = 1;
   
-            $email = \Config\Services::email($config);
+            $email = Services::email($config);
             $email->setFrom($parameters['sender_address'], $parameters['system_id']);
             $email->setTo($request['email_address']);
 
@@ -1888,9 +1924,9 @@ class UserModel extends Model {
 
             return;
 
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
-            throw new \Exception($ex->getMessage());
+            throw new Exception($ex->getMessage());
         }
     }    
 }

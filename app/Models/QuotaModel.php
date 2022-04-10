@@ -10,7 +10,8 @@ class QuotaModel extends Model{
      * @param int
      * @return bool
      */
-    public function updateUserQuota($id, $quota) {
+    public function updateUserQuota($id, $quota): bool
+    {
         try {
             $db = db_connect();
 
@@ -32,7 +33,8 @@ class QuotaModel extends Model{
      * @param int
      * @return int
      */
-    public function getUserQuota($id) {
+    public function getUserQuota($id): int
+    {
         try {
             $db = db_connect();
 
@@ -55,7 +57,8 @@ class QuotaModel extends Model{
      * @param int
      * @return array
      */
-    public function computeUsedQuota($id) {
+    public function computeUsedQuota($id): array
+    {
         try {
             $db = db_connect();
 

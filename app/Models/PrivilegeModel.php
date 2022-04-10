@@ -17,7 +17,8 @@ class PrivilegeModel extends Model{
      * @param int
      * @return array
     */
-    public function getPrivilegeAssignedToUserOnDocument($request) {
+    public function getPrivilegeAssignedToUserOnDocument($request): array
+    {
         $response = [];        
         try {
             $db = db_connect();
@@ -35,13 +36,12 @@ class PrivilegeModel extends Model{
                 $response['privilege'] = PrivilegeOptions::NO_ACCESS;
                 $response['status']    = true;
                 $response['is_owner']  = false;
-                return $response; 
             } else {
                 $response['privilege'] = $row->privilege;
                 $response['status']    = true;
                 $response['is_owner']  = $row->uploaded_by == $request['user_id'];
-                return $response;
             }
+            return $response;
         } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             $response['privilege'] = PrivilegeOptions::NO_ACCESS;
@@ -57,7 +57,8 @@ class PrivilegeModel extends Model{
      * @param int
      * @return array
     */
-    public function getPrivilegeAssignedToUserOnFolder($request) {
+    public function getPrivilegeAssignedToUserOnFolder($request): array
+    {
         $response = [];
         try {
             $db = db_connect();
@@ -74,17 +75,14 @@ class PrivilegeModel extends Model{
                 $response['privilege'] = PrivilegeOptions::NO_ACCESS;
                 $response['status']    = true;
                 $response['is_owner']  = false;
-                $response['user_id']   = $request['user_id'];
-                $response['folder_id'] = $request['folder_id'];
-                return $response; 
             } else {
                 $response['privilege'] = $row->privilege;
                 $response['status']    = true;
                 $response['is_owner']  = $row->created_by == $request['user_id'];
-                $response['user_id']   = $request['user_id'];
-                $response['folder_id'] = $request['folder_id'];
-                return $response;
             }
+            $response['user_id']   = $request['user_id'];
+            $response['folder_id'] = $request['folder_id'];
+            return $response;
         } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             $response['privilege'] = PrivilegeOptions::NO_ACCESS;
@@ -100,7 +98,8 @@ class PrivilegeModel extends Model{
      * @param int
      * @return array
     */
-    public function getPrivilegeAssignedToGroupOnFolder($request) {
+    public function getPrivilegeAssignedToGroupOnFolder($request): array
+    {
         $response = [];
         try {
             $db = db_connect();
@@ -114,13 +113,11 @@ class PrivilegeModel extends Model{
 
             if (!isset($row)) {
                 $response['privilege'] = PrivilegeOptions::NO_ACCESS;
-                $response['status']    = true;
-                return $response;
-            } else {+
+            } else {
                 $response['privilege'] = $row->privilege;
-                $response['status']    = true;
-                return $response;
             }
+            $response['status']    = true;
+            return $response;
 
         } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
@@ -136,7 +133,8 @@ class PrivilegeModel extends Model{
      * @param int
      * @return array
     */
-    public function getPrivilegeAssignedToGroupOnDocument($request) {
+    public function getPrivilegeAssignedToGroupOnDocument($request): array
+    {
         $response = [];
 
         try {
@@ -151,13 +149,11 @@ class PrivilegeModel extends Model{
 
             if (!isset($row)) {
                 $response['privilege'] = PrivilegeOptions::NO_ACCESS;
-                $response['status']    = true;
-                return $response;
             } else {
                 $response['privilege'] = $row->privilege;
-                $response['status']    = true;
-                return $response;
             }
+            $response['status']    = true;
+            return $response;
 
         } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
@@ -173,7 +169,8 @@ class PrivilegeModel extends Model{
      * @param int
      * @return array
     */
-    public function getGroupAccessOnDocument($id) {
+    public function getGroupAccessOnDocument($id): array
+    {
         $response = [];
 
         try {
@@ -222,7 +219,8 @@ class PrivilegeModel extends Model{
      * @param int
      * @return array
     */
-    public function getGroupAccessOnFolder($id) {
+    public function getGroupAccessOnFolder($id): array
+    {
         $response = [];
 
         try {
@@ -271,7 +269,8 @@ class PrivilegeModel extends Model{
      * @param int
      * @return array
     */
-    public function getUserAccessOnDocument($id) {
+    public function getUserAccessOnDocument($id): array
+    {
         $response = [];
 
         try {
@@ -325,7 +324,8 @@ class PrivilegeModel extends Model{
      * @param int
      * @return array
     */
-    public function getUserAccessOnFolder($id) {
+    public function getUserAccessOnFolder($id): array
+    {
         $response = [];
 
         try {
@@ -379,7 +379,8 @@ class PrivilegeModel extends Model{
      * @param array
      * @return array
      */
-    public function getPrivilegeForFolder($request) {
+    public function getPrivilegeForFolder($request): array
+    {
         $response = [];
 
         try {
@@ -398,15 +399,13 @@ class PrivilegeModel extends Model{
                 $response['privilege']     = $row->privilege;
                 $response['folder_id']     = $request['folder_id'];
                 $response['is_authorised'] = true;
-                $response['status']        = true;
-                return $response;
             } else {
                 $response['privilege']     = PrivilegeOptions::NO_ACCESS;
                 $response['folder_id']     = $request['folder_id'];
                 $response['is_authorised'] = false;
-                $response['status']        = true;
-                return $response;
             }
+            $response['status']        = true;
+            return $response;
 
         } catch(Exception $ex) {
             log_message('error', $ex->getMessage());
@@ -424,7 +423,8 @@ class PrivilegeModel extends Model{
      * @param array
      * @return array
      */
-    public function getPrivilegeForDocument($request) {
+    public function getPrivilegeForDocument($request): array
+    {
         $response = [];
         try {
             $db = db_connect();
@@ -442,13 +442,12 @@ class PrivilegeModel extends Model{
                 $response['privilege']     = $row->privilege;
                 $response['document_id']   = $request['document_id'];
                 $response['is_authorised'] = true;
-                return $response;
             } else {
                 $response['privilege']     = PrivilegeOptions::NO_ACCESS;
                 $response['document_id']   = $request['document_id'];
                 $response['is_authorised'] = false;
-                return $response;
             }
+            return $response;
         } catch(Exception $ex) {
             log_message('error', $ex->getMessage());
             $response['privilege']     = PrivilegeOptions::NO_ACCESS;
@@ -465,7 +464,8 @@ class PrivilegeModel extends Model{
      * @param bool $send_email
      * @return array
      */
-    public function modifyPrivilegeOnFolder($request, $send_email = true) {
+    public function modifyPrivilegeOnFolder($request, bool $send_email = true): array
+    {
         $response = [];
         try {
             
@@ -593,7 +593,8 @@ class PrivilegeModel extends Model{
      * @param array
      * @return array
      */
-    public function modifyPrivilegeOnDocument($request) {
+    public function modifyPrivilegeOnDocument($request): array
+    {
         $response = [];
         try {
             if (count($request['members']) <= 0) {
@@ -762,16 +763,17 @@ class PrivilegeModel extends Model{
      * @param string
      * @param int
      * @param int
-     * @return bool
+     * @return void
      */
-    private function sendNotification($users, $auth_user, $object_name, $privilege, $object_type) {
+    private function sendNotification($users, $auth_user, $object_name, $privilege, $object_type): void
+    {
         try {
             // get details of the authorising user
             $user_model = new UserModel();
             $auth_user = $user_model->getUserDetails($auth_user, false);
 
             if ($auth_user['result_set'] == null) {
-                return false;
+                return;
             }
 
             $auth = $auth_user['result_set'];
@@ -798,8 +800,8 @@ class PrivilegeModel extends Model{
             $template = $builder->get()->getRow();
 
             if (!isset($template)) {
-                log_message('error', sprintf('Missing template - Privilege Template'));
-                return false;
+                log_message('error', 'Missing template - Privilege Template');
+                return;
             }
 
             $email_template = $template->parameter_value;
@@ -816,7 +818,7 @@ class PrivilegeModel extends Model{
                     continue;
                 }
 
-                // user cannot send an email to themselves
+                // the user IDs match, so don't send the email
                 if ($row->id == $_SESSION['user_id']) {
                     continue;
                 }
@@ -824,8 +826,6 @@ class PrivilegeModel extends Model{
                 // format the names properly
                 $full_name = sprintf('%s %s', $row->first_name, $row->last_name);
                 $privilege_desc = '';
-
-                $email_msg = null;
 
                 if ($privilege == PrivilegeOptions::WRITE || $privilege == PrivilegeOptions::READ) {
                     $privilege_desc = $privilege == PrivilegeOptions::WRITE ? "WRITE" : "READ";
@@ -836,7 +836,6 @@ class PrivilegeModel extends Model{
                         $transform = array("{name}" => $full_name, "{privilege}" => $privilege_desc, "{document_name}" => $object_name, "{grant_user}" => $full_name_admin);
                     }
 
-                    $email_msg = strtr($email_template, $transform);
                 } else {
                     if ($object_type == 0) {
                         $transform = array("{name}" => $full_name, "{privilege}" => $privilege_desc, "{folder_name}" => $object_name, "{revoke_user}" => $full_name_admin);
@@ -844,8 +843,8 @@ class PrivilegeModel extends Model{
                         $transform = array("{name}" => $full_name, "{privilege}" => $privilege_desc, "{document_name}" => $object_name, "{revoke_user}" => $full_name_admin);
                     }
 
-                    $email_msg = strtr($email_template, $transform);
                 }
+                $email_msg = strtr($email_template, $transform);
 
                 $email_param['recipient']     = $row->email_address;
                 $email_param['email_message'] = $email_msg;
@@ -855,11 +854,11 @@ class PrivilegeModel extends Model{
                 $email_logger->logOutgoingEmail($email_param);
             }
 
-            return true;
+            return;
 
         } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
-            return false;
+            return;
         }
     }
 }

@@ -62,7 +62,8 @@ class StringHelper {
     * @param string
     * @return string
     */
-    public function hashPassword($plain_text_password) {
+    public function hashPassword($plain_text_password): string
+    {
         return base64_encode(hash('sha512', $plain_text_password, true));
     }
 
@@ -73,10 +74,7 @@ class StringHelper {
      * @return false|string
      */
     public function encryptString($plain_text, $encryption_key) {
-        $ciphering = "AES-256-CTR";
-        $options = 0;
-        $encryption_iv = '1234567891011121';
-        return  openssl_encrypt($plain_text, $ciphering, $encryption_key, $options, $encryption_iv);
+        return  openssl_encrypt($plain_text, "AES-256-CTR", $encryption_key, 0, '1234567891011121');
     }
 
     /**
@@ -86,10 +84,7 @@ class StringHelper {
      * @return false|string
      */
     public function decryptString($cipher_text, $decryption_key) {
-        $decryption_iv = '1234567891011121';
-        $ciphering = "AES-256-CTR";
-        $options = 0;
-        return openssl_decrypt($cipher_text, $ciphering, $decryption_key, $options, $decryption_iv);
+        return openssl_decrypt($cipher_text, "AES-256-CTR", $decryption_key, 0, '1234567891011121');
     }
 
     /**
@@ -152,11 +147,12 @@ class StringHelper {
     }
 
     /**
-     * Method converts a number to a human readable format
+     * Method converts a number to a human-readable format
      * @param float $value
      * @return string
      */
-    public function convertToThousandsFormat($value) {
+    public function convertToThousandsFormat($value): string
+    {
        return number_format($value, 0, '.', ',');
     }
 
@@ -167,7 +163,8 @@ class StringHelper {
     * @return string
     */
 
-    public function formatName($name, $convert_to_upper = false) {
+    public function formatName($name, $convert_to_upper = false): string
+    {
         $formatted_name = $convert_to_upper ? strtoupper(trim($name)) : ucwords(strtolower(trim($name)));
         return preg_replace('/\s+/', ' ', $formatted_name);
     }

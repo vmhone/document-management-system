@@ -15,8 +15,8 @@ class DashboardModel extends Model {
      * Method gets dashboard statistics
      * @return array
      */
-    public function getDashboardStatistics() {
-
+    public function getDashboardStatistics(): array
+    {
         $result_set = null;
 
         $result_set['active_sessions'] = $this->countActiveSessions();
@@ -31,7 +31,8 @@ class DashboardModel extends Model {
      * Method counts active users in the system
      * @return string
      */
-    private function countActiveSessions() {
+    private function countActiveSessions(): string
+    {
         try {
             $lib = new StringHelper();
             $session_model = new SessionModel();
@@ -46,7 +47,8 @@ class DashboardModel extends Model {
      * Method counts total documents in the system
      * @return string
      */
-    private function countTotalDocuments() {
+    private function countTotalDocuments(): string
+    {
         try {
             $db = db_connect();
 
@@ -68,7 +70,8 @@ class DashboardModel extends Model {
      * Method counts total groups in the system
      * @return string
      */
-    private function countTotalGroups() {
+    private function countTotalGroups(): string
+    {
         try {
             $db = db_connect();
 
@@ -90,7 +93,8 @@ class DashboardModel extends Model {
      * Method counts total folders in the system
      * @return string
      */
-    private function countTotalFolders() {
+    private function countTotalFolders(): string
+    {
         try {
             $db = db_connect();
 
@@ -112,7 +116,8 @@ class DashboardModel extends Model {
      * Method gets the largest folders in the system
      * @return array|null
      */
-    public function getLargestFolders() {
+    public function getLargestFolders(): ?array
+    {
         $result_set = null;
 
         try {
@@ -147,7 +152,8 @@ class DashboardModel extends Model {
      * Method gets the newest files uploaded to the system
      * @return array|null
      */
-    public function getLatestFiles() {
+    public function getLatestFiles(): ?array
+    {
         
         $result_set = [];
 
@@ -194,8 +200,8 @@ class DashboardModel extends Model {
      * Method gets the latest folders on the system
      * @return array|null
      */
-    public function getLatestFolders() {
-
+    public function getLatestFolders(): ?array
+    {
         $result_set = [];
 
         try {

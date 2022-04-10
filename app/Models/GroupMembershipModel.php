@@ -16,7 +16,8 @@ class GroupMembershipModel extends Model{
      * @return array
      */
 
-    public function assignUserToGroup($request){
+    public function assignUserToGroup(array $request): array
+    {
         $response = [];
         try{
             $db = db_connect();
@@ -160,34 +161,35 @@ class GroupMembershipModel extends Model{
      * @param int $user_id
      * @param int $action
      * @param string $group_name
-     * @return bool
+     * @return void
      */
-    private function sendNotification($user_id, $action, $group_name) {
+    private function sendNotification(int $user_id, int $action, string $group_name): void
+    {
         try {
             // get the details of the affected user
             $user_model = new UserModel();
             $affected_user = $user_model->getUserDetails($user_id, false);
 
             if ($affected_user['result_set'] == null) {
-                return false;
+                return;
             }
 
             $row = $affected_user['result_set'];
 
             // do not send emails to inactive users
             if ((int) $row->state <= 0) {
-                return false;
+                return;
             }
 
             if ($row->id == $_SESSION['user_id']) {
-                return false;
+                return;
             }
 
             // get details of the authorising user
             $auth_user = $user_model->getUserDetails($_SESSION['user_id'], false);
 
             if ($auth_user['result_set'] == null) {
-                return false;
+                return;
             }
 
             $auth = $auth_user['result_set'];
@@ -201,14 +203,14 @@ class GroupMembershipModel extends Model{
             } else if ($action == 0) {
                 $builder->where('parameter_name', 'group_membership_remove');
             } else {
-                return false;
+                return;
             }
 
             $template = $builder->get()->getRow();
 
             if (!isset($template)) {
-                log_message('error', sprintf('Missing template - Group Email'));
-                return false;
+                log_message('error', 'Missing template - Group Email');
+                return;
             }
 
             // format the names properly
@@ -228,10 +230,10 @@ class GroupMembershipModel extends Model{
             $email_logger = new LoggingModel();
             $email_logger->logOutgoingEmail($email_param);
 
-            return true;
+            return;
         } catch(Exception $ex) { 
             log_message('error', $ex->getMessage());
-            return false;
+            return;
         }
     }
 
@@ -240,7 +242,8 @@ class GroupMembershipModel extends Model{
      * @param array $request
      * @return array
      */
-    public function revokeGroupMembership($request){
+    public function revokeGroupMembership(array $request): array
+    {
         $response = [];
 
         try{
@@ -311,7 +314,8 @@ class GroupMembershipModel extends Model{
      * @param int $id
      * @return array
      */
-    public function getGroupMembers($id) {
+    public function getGroupMembers(int $id): array
+    {
         $members = [];
         try {
             $db = db_connect();
@@ -330,7 +334,7 @@ class GroupMembershipModel extends Model{
             $result = $builder->get();
 
             foreach ($result->getResult() as $row) { 
-                array_push($members, $row->user_id);
+                $members[] = $row->user_id;
             }
 
             return array_unique($members);
@@ -342,11 +346,12 @@ class GroupMembershipModel extends Model{
 
     /**
      * method to get all members of the different or specified group
-     * @param int $id
-     * @param int $user_id
+     * @param int|null $id
+     * @param int|null $user_id
      * @return array
      */
-    public function getGroupMembership($id = null, $user_id = null){
+    public function getGroupMembership(int $id = null, int $user_id = null): array
+    {
         $response = [];
         try {
             $db = db_connect();
@@ -414,7 +419,8 @@ class GroupMembershipModel extends Model{
      * @param bool $get_ids_only
      * @return array
      */
-    public function getGroupMembershipByMember($id, $only_include_active = false, $get_ids_only = false){
+    public function getGroupMembershipByMember(int $id, bool $only_include_active = false, bool $get_ids_only = false): array
+    {
         $response = [];
         try {
             $db = db_connect();
@@ -434,23 +440,21 @@ class GroupMembershipModel extends Model{
                 if ($only_include_active) {
                     if ($row->state > 0) {
                         if ($get_ids_only) {
-                            array_push($result_set, $row->id);
+                            $result_set[] = $row->id;
                         } else {
                             $result_set[] = array(
                                 'id'             => $row->id,
                                 'group_name'     => $row->name,
                                 'created_date'   => $row->created_date,
-                                'group_state'    => $row->state == 0 ? 'Inactive' : 'Active',
+                                'group_state'    => 'Active',
                                 'group_state_id' => $row->state,
                                 'assigned_date'  => $row->assigned_date,
                             );
                         }
-                    } else {
-                        continue;
                     }
                 } else {           
                     if ($get_ids_only) {
-                        array_push($result_set, $row->id);
+                        $result_set[] = $row->id;
                     } else {
                         $result_set[] = array(
                             'id'             => $row->id,
