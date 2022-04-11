@@ -1272,6 +1272,7 @@ class UserModel extends Model {
                 $response['remember_count'] = 0;
                 $response['count'] = false;
                 $response['password_count'] = 0;
+                $response['status'] = false;
                 return $response;
             }
 

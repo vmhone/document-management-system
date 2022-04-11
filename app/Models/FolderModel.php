@@ -17,10 +17,10 @@ class FolderModel extends Model {
     /**
      * Method checks if a folder exists
      * @param  string
-     * @return object
+     * @return mixed
      * @throws Exception
      */
-    private function validateFolderExistence($folder_name): object
+    private function validateFolderExistence($folder_name)
     {
         try {
             $db = db_connect();

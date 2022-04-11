@@ -275,7 +275,11 @@ class Document extends BaseController
 
     public function InitiateDocumentUpdate() {
 
-        $id = $_SESSION['id'];
+        $id = null;
+
+        if (array_key_exists('id', $_SESSION)) {
+            $id = $_SESSION['id'];
+        }
 
         // no ID present, just redirect
         if ($id == null) {
@@ -284,8 +288,10 @@ class Document extends BaseController
             return redirect()->to('/Document/Manage');
         }
 
-        // forget the ID
-        unset($_SESSION['id']);
+        if (array_key_exists('id', $_SESSION)) {
+            // forget the ID
+            unset($_SESSION['id']);
+        }
 
         // do we have permissions to update this document?
         $param['document_id'] = $id;

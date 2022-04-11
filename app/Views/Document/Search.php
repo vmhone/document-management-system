@@ -161,8 +161,18 @@
     <div class="col-12">
         <?php
         session_start();
-        $remark = $_SESSION['remark'];
-        $state  = $_SESSION['state'];
+
+        $state = null;
+        $remark = null;
+
+        if (array_key_exists('remark', $_SESSION)) {
+            $remark = $_SESSION['remark'];
+        }
+
+        if (array_key_exists('state', $_SESSION)) {
+            $state  = $_SESSION['state'];
+        }
+
         if (isset($remark) && $state === false) {
             ?>
 

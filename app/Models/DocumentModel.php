@@ -1395,7 +1395,7 @@ class DocumentModel extends Model
 
             // if it is an update let's get those who have access to the document and notify them as well
             // get the emails of those who currently have access to the document
-            if ($request['action_type'] == 1) {
+            if ($request['action_type'] == 1 && sizeof($recipients) > 0) {
                 $builder = $db->table('vw_notification');
                 $builder->select('user_id');
                 $builder->where('document_id', $request['doc_id']);
