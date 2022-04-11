@@ -46,7 +46,7 @@ class DocumentModel extends Model
 
     /**
      * Method submits a request to send documents via email
-     * @param int  ID of the document,
+     * @param int ID of the document,
      * @param array List of recipients,
      * @param bool Whether to include the sender or not
      * @return array
@@ -947,10 +947,10 @@ class DocumentModel extends Model
     
     /**
      * Method gets document details for download purposes
-     * @param int $id
+     * @param $id
      * @return array
      */
-    public function getDocumentForDownload(int $id): array
+    public function getDocumentForDownload($id): array
     {
         try {
             $db = db_connect();

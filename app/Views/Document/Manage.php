@@ -566,15 +566,28 @@
 
     <div class="col-12">
         <?php
+            $remark = null;
+            $state  = null;
             session_start();
-            $remark = $_SESSION['remark'];
-            $state  = $_SESSION['state'];
+
+            if (array_key_exists('remark', $_SESSION)) {
+                $remark = $_SESSION['remark'];
+            }
+
+            if (array_key_exists('state', $_SESSION)) {
+                $state  = $_SESSION['state'];
+            }
+
             if (isset($remark) && $state === false) {
         ?>
 
         <div id="WarningDiv" class="alert alert-warning alert-dismissible fade show" role="alert">
             <?php echo $remark; ?>
-            <?php unset($_SESSION['remark']); ?>
+            <?php
+                if (array_key_exists('remark', $_SESSION)) {
+                    unset($_SESSION['remark']);
+                }
+            ?>
             <?php unset($_SESSION['state']); ?>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
