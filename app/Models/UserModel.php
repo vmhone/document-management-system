@@ -110,10 +110,10 @@ class UserModel extends Model {
     /**
      * Method verifies a user by ID
      * @param int $id
-     * @return object
+     * @return mixed
      * @throws Exception
      */
-    protected function verifyUserById(int $id): object
+    protected function verifyUserById(int $id): mixed
     {
         try {
             $db = db_connect();
@@ -132,10 +132,10 @@ class UserModel extends Model {
     /**
      * Method verifies a user by checking the email address
      * @param string
-     * @return object
+     * @return mixed
      * @throws Exception
      */
-    protected function verifyUserByEmail($email_address): object
+    protected function verifyUserByEmail($email_address): mixed
     {
         try {
             $db = db_connect();
