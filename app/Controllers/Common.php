@@ -43,7 +43,7 @@ class Common extends BaseController
             $platform = $parameter_model->getParameter('log_platform');
     
             // should we log the platform details
-            if (isset($platform) && (int)$platform->parameter_value > 0) {
+            if ((int)$platform->parameter_value > 0) {
                 $request = Services::request();
                 $agent = $request->getUserAgent();
     
@@ -86,7 +86,7 @@ class Common extends BaseController
         }
 
         $data['js_files'][0] = base_url() . '/assets/custom/common/otp.js';
-        return view('Common/OTP');
+        return view('Common/OTP', $data);
     }
 
     public function GenerateOTP() {
@@ -393,7 +393,6 @@ class Common extends BaseController
 
         $request['email_address'] = $username;
         $request['password']      = $password;
-        $request['attempt_no']    = 0;
 
         $cache_username = str_replace('@', '', trim($username));
 

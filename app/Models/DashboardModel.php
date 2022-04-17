@@ -80,7 +80,7 @@ class DashboardModel extends Model {
             $builder->where('state', 1);
 
             $query = $builder->get();
-            
+
             $lib = new StringHelper();
             return $lib->convertToThousandsFormat($query->getRow()->total_count);
         } catch (Exception $ex) {
@@ -236,11 +236,8 @@ class DashboardModel extends Model {
                 );
             }
 
-            if (sizeof($result_set) <= 0) {
-                return [];
-            }
-            
-            return $result_set;
+            return sizeof($result_set) <= 0 ? [] : $result_set;
+
         } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             return $result_set;

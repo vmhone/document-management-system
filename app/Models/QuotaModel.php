@@ -1,6 +1,7 @@
 <?php namespace App\Models;
 use CodeIgniter\Model;
 use CodeIgniter\I18n\Time;
+use Exception;
 
 class QuotaModel extends Model{
 
@@ -22,7 +23,7 @@ class QuotaModel extends Model{
             $builder->update();    
 
             return true;
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
             return false;
         }
@@ -32,6 +33,7 @@ class QuotaModel extends Model{
      * Method gets the quota for a particular user
      * @param int
      * @return int
+     * @throws Exception
      */
     public function getUserQuota($id): int
     {
@@ -45,9 +47,9 @@ class QuotaModel extends Model{
             $row = $builder->get()->getRow();
 
             return $row->quota;
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
-            throw new \Exception($ex->getMessage());
+            throw new Exception($ex->getMessage());
         }
     }
 
@@ -73,7 +75,7 @@ class QuotaModel extends Model{
 
             return $response;
 
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             log_message('error', $ex->getMessage());
 
             $response['status'] = false;

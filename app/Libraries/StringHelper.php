@@ -17,7 +17,8 @@ class StringHelper {
      * Method gets the current URL
      * @return string
      */
-    public function getCurrentUrl() {
+    public function getCurrentUrl(): string
+    {
         return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     }
 
@@ -38,7 +39,8 @@ class StringHelper {
      * Method gets an IP Address of a client
      * @return string
      */
-    public function getIpAddress() {
+    public function getIpAddress(): string
+    {
         return $_SERVER['HTTP_CLIENT_IP'] 
             ?? $_SERVER["HTTP_CF_CONNECTING_IP"] 
             ?? $_SERVER['HTTP_X_FORWARDED'] 
@@ -93,15 +95,14 @@ class StringHelper {
     * @return array
     *
     */
-    public function flattenArray(array $array) {
+    public function flattenArray(array $array): array
+    {
         $result = array();
-        if (is_array($array)) {
-            foreach ($array as $k => $v) {
-                if (is_array($v)) {
-                    $result = array_merge($result, $this->flattenArray($v));
-                } else {
-                    $result[$k] = $v;
-                }
+        foreach ($array as $k => $v) {
+            if (is_array($v)) {
+                $result = array_merge($result, $this->flattenArray($v));
+            } else {
+                $result[$k] = $v;
             }
         }
         return $result;
@@ -112,7 +113,8 @@ class StringHelper {
      * @param bool
      * @return string
      */
-    public function generateGuid($include_dashes = false) {
+    public function generateGuid($include_dashes = false): string
+    {
         if (function_exists('com_create_guid') === true) {
             return trim(com_create_guid(), '{}');
         }
@@ -135,7 +137,8 @@ class StringHelper {
     *
     */
     
-   public function generateRandomPassword($length = 8) {
+   public function generateRandomPassword(int $length = 8): string
+   {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()?[]{}';
         $charactersLength = strlen($characters);
         $randomString = '';
@@ -151,9 +154,9 @@ class StringHelper {
      * @param float $value
      * @return string
      */
-    public function convertToThousandsFormat($value): string
+    public function convertToThousandsFormat(float $value): string
     {
-       return number_format($value, 0, '.', ',');
+       return number_format($value);
     }
 
     /**

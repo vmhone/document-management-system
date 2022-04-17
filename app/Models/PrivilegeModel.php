@@ -116,7 +116,7 @@ class PrivilegeModel extends Model{
             } else {
                 $response['privilege'] = $row->privilege;
             }
-            $response['status']    = true;
+            $response['status'] = true;
             return $response;
 
         } catch (Exception $ex) {
@@ -830,20 +830,26 @@ class PrivilegeModel extends Model{
                 if ($privilege == PrivilegeOptions::WRITE || $privilege == PrivilegeOptions::READ) {
                     $privilege_desc = $privilege == PrivilegeOptions::WRITE ? "WRITE" : "READ";
 
-                    if ($object_type == 0) {
-                        $transform = array("{name}" => $full_name, "{privilege}" => $privilege_desc, "{folder_name}" => $object_name, "{grant_user}" => $full_name_admin);
-                    } else {
-                        $transform = array("{name}" => $full_name, "{privilege}" => $privilege_desc, "{document_name}" => $object_name, "{grant_user}" => $full_name_admin);
+                    switch ($object_type) {
+                        case 0:
+                            $transform = array("{name}" => $full_name, "{privilege}" => $privilege_desc, "{folder_name}" => $object_name, "{grant_user}" => $full_name_admin);
+                            break;
+                        default:
+                            $transform = array("{name}" => $full_name, "{privilege}" => $privilege_desc, "{document_name}" => $object_name, "{grant_user}" => $full_name_admin);
+                            break;
                     }
 
                 } else {
-                    if ($object_type == 0) {
-                        $transform = array("{name}" => $full_name, "{privilege}" => $privilege_desc, "{folder_name}" => $object_name, "{revoke_user}" => $full_name_admin);
-                    } else {
-                        $transform = array("{name}" => $full_name, "{privilege}" => $privilege_desc, "{document_name}" => $object_name, "{revoke_user}" => $full_name_admin);
+                    switch ($object_type) {
+                        case 0:
+                            $transform = array("{name}" => $full_name, "{privilege}" => $privilege_desc, "{folder_name}" => $object_name, "{revoke_user}" => $full_name_admin);
+                            break;
+                        default:
+                            $transform = array("{name}" => $full_name, "{privilege}" => $privilege_desc, "{document_name}" => $object_name, "{revoke_user}" => $full_name_admin);
+                            break;
                     }
-
                 }
+
                 $email_msg = strtr($email_template, $transform);
 
                 $email_param['recipient']     = $row->email_address;

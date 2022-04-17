@@ -30,7 +30,11 @@ class Document extends BaseController
 
         // get the users assigned quota
         $quota_model = new QuotaModel();
-        $data['assigned_quota'] = $quota_model->getUserQuota($_SESSION['user_id']);
+        try {
+            $data['assigned_quota'] = $quota_model->getUserQuota($_SESSION['user_id']);
+        } catch (Exception $e) {
+            $data['assigned_quota'] = 0;
+        }
 
         // get the used quota
         $data['used_quota'] = $quota_model->computeUsedQuota($_SESSION['user_id']);
@@ -48,7 +52,12 @@ class Document extends BaseController
 
         // get the users assigned quota
         $quota_model = new QuotaModel();
-        $data['assigned_quota'] = $quota_model->getUserQuota($_SESSION['user_id']);
+
+        try {
+            $data['assigned_quota'] = $quota_model->getUserQuota($_SESSION['user_id']);
+        } catch (Exception $e) {
+            $data['assigned_quota'] = 0;
+        }
 
         // get the used quota
         $data['used_quota'] = $quota_model->computeUsedQuota($_SESSION['user_id']);
@@ -418,7 +427,7 @@ class Document extends BaseController
         }
 
         $document_model = new DocumentModel();
-        $response = $document_model->sendDocumentViaEmail($doc_id, $recipients, $include_sender > 0 ? true : false);
+        $response = $document_model->sendDocumentViaEmail($doc_id, $recipients, $include_sender > 0);
 
         $json_data = [
             'remark' => $response['remark'],
@@ -462,8 +471,6 @@ class Document extends BaseController
             $_SESSION['state'] = false;
             return redirect()->to('/Document/Manage');
         }
-
-        $file_name = null;
 
         $allowed_extensions = Extension::getRenderSupportedExtensions();
 
@@ -541,7 +548,6 @@ class Document extends BaseController
         }
 
         $row = $response['result_set'];
-        $file_name = null;
 
         // does the file have an extension?
         if (isset($row->extension)) {
@@ -635,7 +641,13 @@ class Document extends BaseController
         // check the file size against remaining quota
         if ($_SESSION['role_id'] != UserRole::ADMINISTRATOR) {
             $quota_model = new QuotaModel();
-            $assigned_quota = $quota_model->getUserQuota($_SESSION['user_id']);
+
+            try {
+                $assigned_quota = $quota_model->getUserQuota($_SESSION['user_id']);
+            } catch (Exception $e) {
+                $assigned_quota = 0;
+            }
+
             $used_quota = $quota_model->computeUsedQuota($_SESSION['user_id']);
 
             $remaining_quota = $assigned_quota - $used_quota['quota'];
@@ -797,20 +809,18 @@ class Document extends BaseController
                 $file_name = $_FILES['file']['name'][$keys];
                 $file_info = pathinfo($file_name);
                 $extension = $file_info['extension'];
-                $new_name  = null;
 
                 $max_size  = (str_replace('M', '', ini_get('upload_max_filesize'))) * 1024 * 1024;
                 $temp_size = filesize($_FILES['file']['tmp_name'][$keys]);
 
                 if ($temp_size >= $max_size) {
                     $resp_msg.= sprintf('%s: %s <br />', $file_name, sprintf('Allowable Size Exceeded: %sB', ini_get('upload_max_filesize')));
-                    $fail_count +=1;
 
                     $json_data = [
                         'remark' => $resp_msg,
                         'state'  => false
                     ];
-                    return $this->response->setJSON($json_data);;
+                    return $this->response->setJSON($json_data);
                 }
                 
                 // does the document exist?
@@ -819,7 +829,6 @@ class Document extends BaseController
                 // the file already exists in the folder so skip it then
                 if ($response) {
                     $resp_msg.= sprintf('%s: %s <br />', $file_name, 'Duplicate Filename');
-                    $fail_count +=1;
                     $json_data = [
                         'remark' => $resp_msg,
                         'state'  => false
@@ -890,11 +899,10 @@ class Document extends BaseController
 
                 if ($response['status']) {
                     $success_count+=1;
-                    $resp_msg.= $response['remark'];
                 } else {
                     $fail_count+=1;
-                    $resp_msg.= $response['remark'];
                 }
+                $resp_msg.= $response['remark'];
             }
 
             // all files uploaded
@@ -964,7 +972,13 @@ class Document extends BaseController
         // check the file size against remaining quota
         if ($_SESSION['role_id'] != UserRole::ADMINISTRATOR) {
             $quota_model = new QuotaModel();
-            $assigned_quota = $quota_model->getUserQuota($_SESSION['user_id']);
+
+            try {
+                $assigned_quota = $quota_model->getUserQuota($_SESSION['user_id']);
+            } catch (Exception $e) {
+                $assigned_quota = 0;
+            }
+
             $used_quota = $quota_model->computeUsedQuota($_SESSION['user_id']);
 
             $remaining_quota = $assigned_quota - $used_quota['quota'];

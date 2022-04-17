@@ -1,7 +1,7 @@
 <?php
 
 class PrivilegeOptions {
-  const READ = 0;
-  const WRITE = 1;
-  const NO_ACCESS = -1;
+  public const READ = 0;
+  public const WRITE = 1;
+  public const NO_ACCESS = -1;
 }
